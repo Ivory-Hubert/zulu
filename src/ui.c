@@ -12,13 +12,20 @@ void showHelp() {
     printf("Zulu usage: zulu [-flag] (optional arg) [required arg]\n\n");
     printf("If no flag is provided Zulu will display the bare minimum,\nfaster (varies though) and without colors.\n\n");
     
-    printf("    -h                Display this help message\n");
     printf("    -s (--ls)         Display parameters of current directory\n");
     printf("    -p (--ls) [PATH]  Display parameters of chosen directory\n");
     printf("    -b (PATH)         List the current or chosen directory with byte sizes\n");
-    
+    printf("    -h                Display this help message and exit\n");
+    printf("    -v                Display version number and exit\n");
+
     printf("\nOptional '--ls' flag will also list the files that Zulu counts.\n");
     printf("\n");
+}
+
+void showVer() {
+    printf("zulu - 0.1.0\n\n");
+    printf("(C) 2026 Ivori Huobolainen\n");
+    printf("Licensed under the GNU GPL v3 or later\n<https://www.gnu.org/licenses/gpl-3.0.html>\n");
 }
 
 void display(struct displayParam *dpp, int timer_ms) {

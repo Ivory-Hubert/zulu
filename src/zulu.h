@@ -58,5 +58,6 @@ void sizeMath(struct fileParam *fpp);
 
 // in ui.c
 void showHelp();
+void showVer();
 void display(struct displayParam *dpp, int timer_ms);
 void liteDisplay(struct displayParam *dpp, int timer_ms);

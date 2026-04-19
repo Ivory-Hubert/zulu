@@ -3,7 +3,7 @@
  * Licensed under the GNU GPL v3 or later
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "zulu.h"
@@ -29,6 +29,9 @@ int main(int argc, char **argv) {
     }
     else if (strcmp(argv[1], "-h") == 0) {
         showHelp();
+    }
+    else if (strcmp(argv[1], "-v") == 0) {
+        showVer();
     }
     else if (strcmp(argv[1], "-b") == 0) {
         listBytes(argc, argv, cwd);
