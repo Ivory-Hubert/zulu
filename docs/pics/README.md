@@ -1,7 +1,13 @@
 ## More features visualised
 
-Summary output with the list flag:
-![Nice CLI](list_output.png)
+**Summary output with the list flag:**
 
-Byte output from a file path:
-![Nice CLI](byte_list.png)
+![List](list_output.png)
+
+**Byte output from a file path:**
+
+![Bytes](byte_output.png)
+
+**Piped output from a file:**
+
+![Piped](pipe_output.png)

@@ -15,4 +15,4 @@ Added a check for byte list (`-b`) mode that checks for the existance of a termi
 
 - **UI tweaks**
 
-Removed the header from standard `-s`/`-p` output, it just crowds the screen. But of course if the `--ls` flag is present then the list and data are still seperated and marked with headers. Also tweaked the whitespaces a bit to make the data easier to scan, in my eyes of course.
+Removed the header from standard `-s`/`-p` output, it just crowds the screen. But of course if the `--ls` flag is present then the list and data are still seperated and marked with headers. Also tweaked the whitespaces a bit to make the data easier to scan, in my eyes atleast.

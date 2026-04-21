@@ -1,10 +1,10 @@
 # Zulu CLI
 
-> Performant directory stats in readable format
+> Performant directory summaries in a readable format
 
-* **Requirements:** C compiler and an Unix system
+* **Requirements:** C compiler and a POSIX system, no other dependencies.
 
-* **Platforms:** Linux or macOS (I've only used it on Linux)
+* **Changelog:** [right here](./CHANGELOG.md)
 
 
 ## Appearance
@@ -13,16 +13,14 @@ That's the basic output and summary version in action:
 
 ![Nice CLI](docs/pics/basic_output.png)
 
-More images [here](./docs/pics)
-
 
 ## Features
 
-* Works in the current directory or a provided one
-* Lists only useful units together depending on sizes, Gib & MiB | MiB & KiB | Bytes
-* Can list the files counted, always lists the biggest & smallest file
-* Simple output mode that skips some logic, to display only total size & count, and only in the largest unit needed
-* Byte output mode that skips math entirely, only lists as it reads
+* Works in the current directory or a provided one.
+* Lists only useful units together, depending on sizes: Gib & MiB | MiB & KiB | Bytes.
+* Can list the files counted, always lists the biggest & smallest file.
+* Simple output mode that skips some logic, to display only total size & count, and only in the largest unit needed.
+* Byte output mode that skips math entirely, only lists as it reads. Will also output in a parser-friendly format if piped.
 
 Some output [examples](./docs/pics)
 
@@ -33,14 +31,14 @@ Some output [examples](./docs/pics)
 ## About
 
 I made this with efficiency in mind, and what's less efficient than having to use bash aliases or bloated tools to
-check how large a folders files are, and what's the biggest file in it?
+check how large some folders files are, and what's the biggest file?
 So Zulu was born, it takes less flags than du and ls take combined to show a similar summary,
-and if you really need the bytes, that's possible too.
+and it runs laps on TUI's if you don't need every detail.
 
-Anyway, if you need a TUI that shows you every files full metadata and many folders at once, Zulu is not it.
-But if you need to check source code size, build artifacts, /any/system/directory etc... Zulu is your < 1 ms friend (usually).
+So, if you need a TUI that shows you every files full metadata and many folders at once, Zulu is not it.
+But if you need to check source code size, build artifacts, /any/system/directory etc... Zulu is your ~1 ms friend (usually).
 
-Do note that you should either trust my provided binary (reverse engineer it to be safe) or compile it yourself, 
+Do note that you should either trust my provided binary (reverse engineer it to be safe) or compile it yourself.
 I naturally have the compile.sh script in root for gcc users. 
 Then make a bash alias to the binary or whatever you wish for easy access.
 
