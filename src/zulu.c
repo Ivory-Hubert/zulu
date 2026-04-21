@@ -53,17 +53,17 @@ int listBytes(int argc, char **argv, const char *cwd) {
     byte_list = 1;
 
     if (argc > 2) {
-        printf("%szulu%s> Listing '%s'\n\n", cyan, reset, argv[2]);
-        searchFolder(argv[2]);
+        printf("Listing: %s\n\n", argv[2]);
+        int count = searchFolder(argv[2]);
 
-        printf("\n");
+        printf("\nCount: %d\n", count);
         return 0;
     };
 
-    printf("%szulu%s> Listing '%s'\n\n", cyan, reset, cwd);
-    searchFolder(cwd);
+    printf("Listing: %s\n\n", cwd);
+    int count = searchFolder(cwd);
         
-    printf("\n");
+    printf("\nCount: %d\n", count);
     return 0;
 }
 
@@ -174,8 +174,13 @@ int searchFolder(const char *path) {
         }
 
         if (byte_list) {
-            printf(" - %s | %s%ld%s bytes\n"
+            if (isatty(STDOUT_FILENO)) {
+                printf(" - %-32.32s | %s%ld%s bytes\n"
                 , de->d_name, cyan, st.st_size, reset);
+            } else {
+                printf("%s|%ld\n"
+                , de->d_name, st.st_size);
+            }
         }
         
         fpp.file_count++;
@@ -184,7 +189,7 @@ int searchFolder(const char *path) {
 
     closedir(dr);
     if (!byte_list) sizeMath(&fpp);
-    return 0;
+    return fpp.file_count;
 }
 
 void sizeMath(struct fileParam *fpp) {
@@ -213,21 +218,21 @@ void sizeMath(struct fileParam *fpp) {
         fpp->max_size = 0;
         fpp->min_size = 0;
     }
-    
+
     dpp.file_count = fpp->file_count;
 
     if (fpp->total_size >= 1073741824) {
-        dpp.total_gb = fpp->total_size / GIB;
-        dpp.total_mb = fpp->total_size / MIB;
+        dpp.total_gb = (fpp->total_size + 512) / GIB;
+        dpp.total_mb = (fpp->total_size + 512) / MIB;
     }
     else if (fpp->total_size >= 1024) {
-        dpp.total_mb = fpp->total_size / MIB;
-        dpp.total_kb = fpp->total_size / KIB;
+        dpp.total_mb = (fpp->total_size + 512) / MIB;
+        dpp.total_kb = (fpp->total_size + 512) / KIB;
     }
     else {
         dpp.total_bytes = fpp->total_size;
     }
-        
+
     if (!lite_mode) {
         if (fpp->max_size < 1024) {
             dpp.biggest_bytes = fpp->max_size;
@@ -239,7 +244,7 @@ void sizeMath(struct fileParam *fpp) {
         dpp.biggest_mb = fpp->max_size / MIB;
         dpp.biggest_kb = fpp->max_size / KIB;
 
-        
+
         if (fpp->min_size < 1024) {
             dpp.smallest_bytes = fpp->min_size;
         }    

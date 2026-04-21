@@ -9,12 +9,12 @@
 #include "zulu.h"
 
 void showHelp() {
-    printf("Zulu usage: zulu [-flag] (optional arg) [required arg]\n\n");
+    printf("Zulu usage: zulu -flag [optional arg] <required arg>\n\n");
     printf("If no flag is provided Zulu will display the bare minimum,\nfaster (varies though) and without colors.\n\n");
     
-    printf("    -s (--ls)         Display parameters of current directory\n");
-    printf("    -p (--ls) [PATH]  Display parameters of chosen directory\n");
-    printf("    -b (PATH)         List the current or chosen directory with byte sizes\n");
+    printf("    -s [--ls]         Display parameters of current directory\n");
+    printf("    -p [--ls] <PATH>  Display parameters of chosen directory\n");
+    printf("    -b <PATH>         List the current or chosen directory with byte sizes\n");
     printf("    -h                Display this help message and exit\n");
     printf("    -v                Display version number and exit\n");
 
@@ -23,27 +23,28 @@ void showHelp() {
 }
 
 void showVer() {
-    printf("zulu - 0.1.0\n\n");
+    printf("zulu - 0.1.1\n\n");
     printf("(C) 2026 Ivori Huobolainen\n");
     printf("Licensed under the GNU GPL v3 or later\n<https://www.gnu.org/licenses/gpl-3.0.html>\n");
 }
 
 void display(struct displayParam *dpp, int timer_ms) {
-    printf("\n==== %sFolder data%s ====\n", cyan, reset);
-
+    if (list_files) {
+        printf("\n==== %sFolder data%s ====\n", cyan, reset);
+    }
     printf("\nFile count: %s%ld%s\n", cyan, dpp->file_count, reset);
 
     printf("\nTotal size:");
     if (dpp->total_gb > 0) {
-        printf("\n    %s%ld%s GiB\n    %s%ld%s MiB\n"
+        printf("\n   %s%ld%s GiB\n   %s%ld%s MiB\n"
             , cyan, dpp->total_gb, reset, cyan, dpp->total_mb, reset);
     }
     else if (dpp->total_bytes >= 1) {
-        printf("\n    %s%ld%s bytes\n\n"
+        printf("\n   %s%ld%s bytes\n\n"
             , cyan, dpp->total_bytes, reset);
     }
     else if (dpp->total_kb > 0) {
-        printf("\n    %s%ld%s MiB\n    %s%ld%s KiB\n"
+        printf("\n   %s%ld%s MiB\n   %s%ld%s KiB\n"
             , cyan, dpp->total_mb, reset, cyan, dpp->total_kb, reset);
     }
     else {
@@ -56,15 +57,15 @@ void display(struct displayParam *dpp, int timer_ms) {
     if (biggest[0]) printf(" - %s\n", biggest);
     
     if (dpp->biggest_gb > 0) {
-        printf("    %s%ld%s GiB\n    %s%ld%s MiB\n"
+        printf("   %s%ld%s GiB\n   %s%ld%s MiB\n"
             , cyan, dpp->biggest_gb, reset, cyan, dpp->biggest_mb, reset);
     }
     else if (dpp->biggest_bytes > 0) {
-        printf("    %s%ld%s bytes\n\n"
+        printf("   %s%ld%s bytes\n\n"
             , cyan, dpp->biggest_bytes, reset);
     }
     else {
-        printf("    %s%ld%s MiB\n    %s%ld%s KiB\n"
+        printf("   %s%ld%s MiB\n   %s%ld%s KiB\n"
             , cyan, dpp->biggest_mb, reset, cyan, dpp->biggest_kb, reset);
     }
 
@@ -73,15 +74,15 @@ void display(struct displayParam *dpp, int timer_ms) {
     if (smallest[0]) printf(" - %s\n", smallest);
     
     if (dpp->smallest_gb > 0) {
-        printf("    %s%ld%s GiB\n    %s%ld%s MiB\n"
+        printf("   %s%ld%s GiB\n   %s%ld%s MiB\n"
             , cyan, dpp->smallest_gb, reset, cyan, dpp->smallest_mb, reset);
     }
     else if (dpp->smallest_kb == 0) {
-        printf("    %s%ld%s bytes\n"
+        printf("   %s%ld%s bytes\n"
             , cyan, dpp->smallest_bytes, reset);
     }
     else {
-        printf("    %s%ld%s MiB\n    %s%ld%s KiB\n"
+        printf("   %s%ld%s MiB\n   %s%ld%s KiB\n"
             , cyan, dpp->smallest_mb, reset, cyan, dpp->smallest_kb, reset);
     }
     
