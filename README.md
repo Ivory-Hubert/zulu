@@ -6,6 +6,9 @@
 
 * **Changelog:** [right here](./CHANGELOG.md)
 
+* **Versions:** in [releases](https://github.com/Ivory-Hubert/zulu/releases)
+
+* **Integration:** [examples](./docs/EXAMPLES.md) using piped output 
 
 ## Appearance
 
@@ -36,11 +39,11 @@ So Zulu was born, it takes less flags than du and ls take combined to show a sim
 and it runs laps on TUI's if you don't need every detail.
 
 So, if you need a TUI that shows you every files full metadata and many folders at once, Zulu is not it.
-But if you need to check source code size, build artifacts, /any/system/directory etc... Zulu is your ~1 ms friend (usually).
+But if you need to check source code size, log folders, /any/system/directory etc... Zulu is your ~1 ms friend (usually).
 
-Do note that you should either trust my provided binary (reverse engineer it to be safe) or compile it yourself.
-I naturally have the compile.sh script in root for gcc users. 
-Then make a bash alias to the binary or whatever you wish for easy access.
+Do note that you should either trust my provided binary (*reverse engineer for assurance*) or compile it yourself.
+I naturally have the `compile.sh` script in root for gcc users. 
+Then drop it in `~/.local/bin` or make a bash alias to the binary for easy access.
 
 
 ## License
@@ -55,5 +58,5 @@ the Free Software Foundation, either version 3 of the License, or
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-[GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.md) for more details.
+[GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.html) for more details.
 
