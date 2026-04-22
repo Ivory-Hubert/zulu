@@ -24,8 +24,9 @@ That's the basic output and summary version in action:
 * Can list the files counted, always lists the biggest & smallest file.
 * Simple output mode that skips some logic, to display only total size & count, and only in the largest unit needed.
 * Byte output mode that skips math entirely, only lists as it reads. Will also output in a parser-friendly format if piped.
+* Built-in byte converter, displays provided bytes in GiB, MiB & KiB.
 
-Some output [examples](./docs/pics)
+Some visual output [examples](./docs/pics)
 
 > [!NOTE]
 > Zulu does not report any metadata other than file size. Does not go into subdirectories. Ignores non-files entirely.

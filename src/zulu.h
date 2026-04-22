@@ -8,12 +8,19 @@
 #include <sys/stat.h>
 #include <stdint.h>
 #include <time.h>
+#include <errno.h>
+
 
 #define KIB (1ULL << 10)
 #define MIB (1ULL << 20)
 #define GIB (1ULL << 30)
 
+#define HALF_KIB 512
+#define HALF_MIB 262144
+#define HALF_GIB 134217728
+
 typedef uint64_t u64;
+
 
 static const char red[] = "\x1b[38;5;196m";
 static const char cyan[] = "\x1b[38;5;14m";
@@ -25,6 +32,7 @@ extern volatile int byte_list;
 
 extern char biggest[1024];
 extern char smallest[1024];
+
 
 struct fileParam {
     u64 file_count;
@@ -49,12 +57,15 @@ struct displayParam {
     u64 file_count;
 };
 
-int listBytes(int argc, char **argv, const char *cwd);
-int listAll(int argc, char **argv, const char *cwd);
-int listPath(int argc, char **argv);
+
+void listBytes(int argc, char **argv, const char *cwd);
+void listAll(int argc, char **argv, const char *cwd);
+void listPath(int argc, char **argv);
+void convert(int argc, char **argv);
 
 int searchFolder(const char *path);
 void sizeMath(struct fileParam *fpp);
+void byteMath(const char *raw);
 
 // in ui.c
 void showHelp();

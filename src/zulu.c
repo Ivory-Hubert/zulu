@@ -41,6 +41,9 @@ int main(int argc, char **argv) {
     }
     else if (strcmp(argv[1], "-p") == 0) {
         listPath(argc, argv);
+    }
+    else if (strcmp(argv[1], "-c") == 0) {
+        convert(argc, argv);
     } else {
         printf("%szulu%s> Unknown parameter '%s'\n", red, reset, argv[1]);
     }
@@ -48,26 +51,30 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-int listBytes(int argc, char **argv, const char *cwd) {
+void listBytes(int argc, char **argv, const char *cwd) {
     // zulu -b (PATH)
     byte_list = 1;
 
+    printf("Listing: %s\n\n", (argc > 2 ? argv[2] : cwd));
+
+    if (isatty(STDOUT_FILENO)) {
+        printf(" %-34s | Bytes\n", "File");
+        printf(" %-34s |------\n", "----");
+    }
+    
     if (argc > 2) {
-        printf("Listing: %s\n\n", argv[2]);
         int count = searchFolder(argv[2]);
 
         printf("\nCount: %d\n", count);
-        return 0;
+        return;
     };
 
-    printf("Listing: %s\n\n", cwd);
     int count = searchFolder(cwd);
         
     printf("\nCount: %d\n", count);
-    return 0;
 }
 
-int listAll(int argc, char **argv, const char *cwd) {
+void listAll(int argc, char **argv, const char *cwd) {
     // zulu -s (--ls)
     printf("%szulu%s> Showing '%s'\n", cyan, reset, cwd);
 
@@ -77,33 +84,43 @@ int listAll(int argc, char **argv, const char *cwd) {
     }
         
     searchFolder(cwd);
-    return 0;
 }
 
-int listPath(int argc, char **argv) {
+void listPath(int argc, char **argv) {
     // zulu -p (--ls) PATH
     if (argc < 3) {
         printf("%szulu%s> No directory provided!\n", red, reset);
-        return 0;
+        return;
     }
-
+    
     volatile int arg_type = 0;
-        
+
     if (argc > 3 && strcmp(argv[2], "--ls") == 0) {
         list_files = 1;
         arg_type = 1;
     }
 
+    printf("%szulu%s> Showing '%s'\n",
+        cyan, reset,
+        (argc > 3 ? argv[3] : argv[2]));
+    
     if (arg_type) {
-        printf("%szulu%s> Showing '%s'\n", cyan, reset, argv[3]);
         printf("\n==== %sFolder list%s ====\n", cyan, reset);
+
         searchFolder(argv[3]);
-    } else {
-        printf("%szulu%s> Showing '%s'\n", cyan, reset, argv[2]);
     }
 
     searchFolder(argv[2]);
-    return 0;
+}
+
+void convert(int argc, char **argv) {
+    // zulu -c [bytes]
+    if (argc < 3) {
+        printf("%szulu%s> No byte size provided!\n", red, reset);
+        return;
+    }
+
+    byteMath(argv[2]);
 }
 
 
@@ -175,10 +192,10 @@ int searchFolder(const char *path) {
 
         if (byte_list) {
             if (isatty(STDOUT_FILENO)) {
-                printf(" - %-32.32s | %s%ld%s bytes\n"
+                printf(" - %-32.32s | %s%lu%s\n"
                 , de->d_name, cyan, st.st_size, reset);
             } else {
-                printf("%s|%ld\n"
+                printf("%s|%lu\n"
                 , de->d_name, st.st_size);
             }
         }
@@ -222,12 +239,12 @@ void sizeMath(struct fileParam *fpp) {
     dpp.file_count = fpp->file_count;
 
     if (fpp->total_size >= 1073741824) {
-        dpp.total_gb = (fpp->total_size + 512) / GIB;
-        dpp.total_mb = (fpp->total_size + 512) / MIB;
+        dpp.total_gb = (fpp->total_size + HALF_GIB) / GIB;
+        dpp.total_mb = (fpp->total_size + HALF_MIB) / MIB;
     }
     else if (fpp->total_size >= 1024) {
-        dpp.total_mb = (fpp->total_size + 512) / MIB;
-        dpp.total_kb = (fpp->total_size + 512) / KIB;
+        dpp.total_mb = (fpp->total_size + HALF_MIB) / MIB;
+        dpp.total_kb = (fpp->total_size + HALF_KIB) / KIB;
     }
     else {
         dpp.total_bytes = fpp->total_size;
@@ -238,22 +255,22 @@ void sizeMath(struct fileParam *fpp) {
             dpp.biggest_bytes = fpp->max_size;
         }
         else if (fpp->max_size >= 1073741824) {
-            dpp.biggest_gb = fpp->max_size / GIB;
+            dpp.biggest_gb = (fpp->max_size + HALF_GIB) / GIB;
         }
 
-        dpp.biggest_mb = fpp->max_size / MIB;
-        dpp.biggest_kb = fpp->max_size / KIB;
+        dpp.biggest_mb = (fpp->max_size + HALF_MIB) / MIB;
+        dpp.biggest_kb = (fpp->max_size + HALF_KIB) / KIB;
 
 
         if (fpp->min_size < 1024) {
             dpp.smallest_bytes = fpp->min_size;
         }    
         else if (fpp->min_size >= 1073741824) {
-            dpp.smallest_gb = fpp->min_size / GIB;
+            dpp.smallest_gb = (fpp->min_size + HALF_GIB) / GIB;
         }
 
-        dpp.smallest_mb = fpp->min_size / MIB;
-        dpp.smallest_kb = fpp->min_size / KIB;
+        dpp.smallest_mb = (fpp->min_size + HALF_MIB) / MIB;
+        dpp.smallest_kb = (fpp->min_size + HALF_KIB) / KIB;
 
     }
 
@@ -262,5 +279,35 @@ void sizeMath(struct fileParam *fpp) {
     
     if (lite_mode) liteDisplay(&dpp, timer_ms);
     display(&dpp, timer_ms);
+}
+
+void byteMath(const char *raw) {
+    errno = 0;
+    char *endptr;
+
+    unsigned long long tmp = strtoull(raw, &endptr, 10);
+    
+    if (errno == ERANGE) {
+        perror("zulu> error: ");
+        return;
+    }
+
+    if (endptr == raw) {
+        fprintf(stderr, "zulu> No digits found\n");
+        return;
+    }
+
+    u64 val = (u64)tmp;
+    
+    u64 gib = (val + HALF_GIB) / GIB;
+    u64 mib = (val + HALF_MIB) / MIB;
+    u64 kib = (val + HALF_KIB) / KIB;
+
+    printf("zulu> Results:\n");
+    printf("   %s%lu%s GiB\n   %s%lu%s MiB\n   %s%lu%s KiB\n\n",
+        cyan, gib, reset,
+        cyan, mib, reset,
+        cyan, kib, reset);
+        
 }
 
