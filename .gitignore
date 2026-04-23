@@ -1,15 +1,8 @@
-## Build artifacts
 /zulu
-*.d
-*.o
-*.a
-*.so
-*.out
+build/
 
-# Debug files
 core
 *.core
 
-# Editor backups
 *~
 *.swp
