@@ -2,7 +2,7 @@ SHELL = /usr/bin/env bash
 
 .PHONY: clean compile strip
 CC = gcc
-CCFLAGS = -Wall -Wextra -pedantic -Werror -MMD -MP
+CCFLAGS = -Wall -Wextra -pedantic -Werror -O3 -flto -MMD -MP
 
 SRC = src/zulu.c src/ui.c src/core.c
 OBJ = $(SRC:src/%.c=build/%.o)

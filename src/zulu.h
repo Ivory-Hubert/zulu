@@ -42,6 +42,7 @@ extern char smallest[1024];
 
 struct fileParam {
     u64 file_count;
+    u64 folder_count;
     u64 total_size;
     u64 min_size;
     u64 max_size;
@@ -61,6 +62,7 @@ struct displayParam {
     u64 total_mb;
     u64 total_gb;
     u64 file_count;
+    u64 folder_count;
 };
 
 // zulu.c
@@ -76,8 +78,7 @@ void sizeMath(struct fileParam *fpp);
 void byteMath(const char *raw);
 void fileData(const char *path);
 
-// ui.c
-void showHelp();
-void showVer();
+// ui.
+void stdout_ui(int mode);
 void display(struct displayParam *dpp, int timer_ms);
 void liteDisplay(struct displayParam *dpp, int timer_ms);

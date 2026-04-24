@@ -30,10 +30,10 @@ int main(int argc, char **argv) {
         searchFolder(cwd);
     }
     else if (strcmp(argv[1], "-h") == 0) {
-        showHelp();
+        stdout_ui(1);
     }
     else if (strcmp(argv[1], "-v") == 0) {
-        showVer();
+        stdout_ui(0);
     }
     else if (strcmp(argv[1], "-b") == 0) {
         listBytes(argc, argv, cwd);

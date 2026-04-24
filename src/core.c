@@ -41,14 +41,16 @@ int searchFolder(const char *path) {
         if (stat(full_path, &st) == -1) {
             continue;
         }
+
+        if ((st.st_mode & S_IFMT) == S_IFDIR) {
+            fpp.folder_count++;
+
+            if (list_files) {
+                printf(" %s%s/%s\n", grey, de->d_name, reset);
+            }
+        }
         
         if ((st.st_mode & S_IFMT) != S_IFREG) {
-            if (list_files) {
-                if ((st.st_mode & S_IFMT) == S_IFDIR) {
-                    printf(" %s%s/%s\n", grey, de->d_name, reset);
-                }
-            }
-            
             continue;
         }
 
@@ -102,49 +104,62 @@ int searchFolder(const char *path) {
 void sizeMath(struct fileParam *fpp) {
     struct displayParam dpp = { 0 };
 
-    // crucial, since min_size is massive when a dir is empty
-    if (fpp->file_count == 0) {
-        fpp->total_size = 0;
-        fpp->max_size = 0;
-        fpp->min_size = 0;
-    }
-
+    //if (fpp->file_count == 0) fpp->min_size = 0;
+    
     dpp.file_count = fpp->file_count;
+    dpp.folder_count = fpp->folder_count;
 
+    
     if (fpp->total_size >= GIB) {
         dpp.total_gb = (fpp->total_size + HALF_GIB) / GIB;
         dpp.total_mb = (fpp->total_size + HALF_MIB) / MIB;
     }
-    else if (fpp->total_size >= KIB) {
+    else if (fpp->total_size >= MIB) {
         dpp.total_mb = (fpp->total_size + HALF_MIB) / MIB;
         dpp.total_kb = (fpp->total_size + HALF_KIB) / KIB;
     }
-    else {
+    else if (fpp->total_size >= KIB) {
+        dpp.total_kb = (fpp->total_size + HALF_KIB) / KIB;
+        dpp.total_bytes = fpp->total_size;
+        
+    } else {
         dpp.total_bytes = fpp->total_size;
     }
 
+    
     if (!lite_mode) {
-        if (fpp->max_size < KIB) {
+        if (fpp->max_size >= GIB) {
+            dpp.biggest_gb = (fpp->max_size + HALF_GIB) / GIB;
+            dpp.biggest_mb = (fpp->max_size + HALF_MIB) / MIB;
+        }
+        else if (fpp->max_size >= MIB) {
+            dpp.biggest_mb = (fpp->max_size + HALF_MIB) / MIB;
+            dpp.biggest_kb = (fpp->max_size + HALF_KIB) / KIB;
+        }
+        else if (fpp->max_size >= KIB) {
+            dpp.biggest_kb = (fpp->max_size + HALF_KIB) / KIB;
+            dpp.biggest_bytes = fpp->max_size;
+            
+        } else {
             dpp.biggest_bytes = fpp->max_size;
         }
-        else if (fpp->max_size >= GIB) {
-            dpp.biggest_gb = (fpp->max_size + HALF_GIB) / GIB;
-        }
-
-        dpp.biggest_mb = (fpp->max_size + HALF_MIB) / MIB;
-        dpp.biggest_kb = (fpp->max_size + HALF_KIB) / KIB;
 
 
-        if (fpp->min_size < KIB) {
-            dpp.smallest_bytes = fpp->min_size;
-        }    
-        else if (fpp->min_size >= GIB) {
+        if (fpp->min_size >= GIB) {
             dpp.smallest_gb = (fpp->min_size + HALF_GIB) / GIB;
+            dpp.smallest_mb = (fpp->min_size + HALF_MIB) / MIB;
         }
-
-        dpp.smallest_mb = (fpp->min_size + HALF_MIB) / MIB;
-        dpp.smallest_kb = (fpp->min_size + HALF_KIB) / KIB;
-
+        else if (fpp->min_size >= MIB) {
+            dpp.smallest_mb = (fpp->min_size + HALF_MIB) / MIB;
+            dpp.smallest_kb = (fpp->min_size + HALF_KIB) / KIB;
+        }
+        else if (fpp->min_size >= KIB) {
+            dpp.smallest_kb = (fpp->min_size + HALF_KIB) / KIB;
+            dpp.smallest_bytes = fpp->min_size;
+            
+        } else {
+            dpp.smallest_bytes = fpp->min_size;
+        }
     }
 
     clock_t elapsed = clock() - beginning;
@@ -161,7 +176,7 @@ void byteMath(const char *raw) {
     unsigned long long tmp = strtoull(raw, &endptr, 10);
     
     if (errno == ERANGE) {
-        perror("zulu> error: ");
+        perror("zulu> error");
         return;
     }
 
@@ -177,7 +192,7 @@ void byteMath(const char *raw) {
     u64 kib = (val + HALF_KIB) / KIB;
 
     printf("zulu> Results:\n");
-    printf("   %s%lu%s GiB\n   %s%lu%s MiB\n   %s%lu%s KiB\n\n",
+    printf(" * %s%lu%s GiB\n * %s%lu%s MiB\n * %s%lu%s KiB\n\n",
         cyan, gib, reset,
         cyan, mib, reset,
         cyan, kib, reset);
@@ -188,7 +203,7 @@ void fileData(const char *path) {
     struct stat st;
 
     if (stat(path, &st) == -1) {
-        perror("zulu> error: ");
+        perror("zulu> error");
         return;
     }
 
