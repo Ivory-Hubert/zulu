@@ -40,33 +40,33 @@ void stdout_ui(int mode) {
 
 void display(struct displayParam *dpp, int timer_ms) {
     if (list_files) {
-        printf("\n==== %sFolder data%s ====",
+        printf("\n==== %sFolder Data%s ====",
             cyan, reset);
     }
 
-    printf("\n%sTotal%s:", cyan, reset);
+    printf("\n[%sTotal%s]\n", cyan, reset);
     if (dpp->total_gb > 0) {
-        printf("\n * %s%lu%s GiB\n * %s%lu%s MiB\n",
+        printf(" * %s%lu%s GiB\n * %lu MiB\n",
             cyan, dpp->total_gb, reset,
-            cyan, dpp->total_mb, reset);
+            dpp->total_mb);
     }
     else if (dpp->total_mb > 0) {
-        printf("\n * %s%lu%s MiB\n * %s%lu%s KiB\n",
+        printf(" * %s%lu%s MiB\n * %lu KiB\n",
             cyan, dpp->total_mb, reset,
-            cyan, dpp->total_kb, reset);
+            dpp->total_kb);
     }
     else if (dpp->total_kb > 0) {
-        printf("\n * %s%lu%s KiB\n * %s%lu%s bytes\n",
+        printf(" * %s%lu%s KiB\n * %lu bytes\n",
             cyan, dpp->total_kb, reset,
-            cyan, dpp->total_bytes, reset);
+            dpp->total_bytes);
     }
     else if (dpp->total_bytes > 0) {
-        printf("\n * %s%lu%s bytes\n",
+        printf(" * %s%lu%s bytes\n",
             cyan, dpp->total_bytes, reset);
             
     } else {
         // early exit to not clutter UI
-        printf(" no files or empty file(s)\n");
+        printf("No files or empty file(s)\n");
         printf("\nFolders: %s%lu%s\n\n",
             cyan, dpp->folder_count, reset);
 
@@ -74,23 +74,23 @@ void display(struct displayParam *dpp, int timer_ms) {
     }
 
 
-    printf("\n%sBiggest%s:\n", yellow, reset);
+    printf("\n[%sLargest%s]\n", yellow, reset);
     if (biggest[0]) printf(" - %s\n", biggest);
 
     if (dpp->biggest_gb > 0) {
-        printf(" * %s%lu%s GiB\n * %s%lu%s MiB\n",
+        printf(" * %s%lu%s GiB\n * %lu MiB\n",
             yellow, dpp->biggest_gb, reset,
-            yellow, dpp->biggest_mb, reset);
+            dpp->biggest_mb);
     }
     else if (dpp->biggest_mb > 0) {
-        printf(" * %s%lu%s MiB\n * %s%lu%s KiB\n",
+        printf(" * %s%lu%s MiB\n * %lu KiB\n",
             yellow, dpp->biggest_mb, reset,
-            yellow, dpp->biggest_kb, reset);
+            dpp->biggest_kb);
     }
     else if (dpp->biggest_kb > 0) {
-        printf(" * %s%lu%s KiB\n * %s%lu%s bytes\n",
+        printf(" * %s%lu%s KiB\n * %lu bytes\n",
             yellow, dpp->biggest_kb, reset,
-            yellow, dpp->biggest_bytes, reset);
+            dpp->biggest_bytes);
             
     } else {
         printf(" * %s%lu%s bytes\n",
@@ -98,23 +98,23 @@ void display(struct displayParam *dpp, int timer_ms) {
     }
 
 
-    printf("\n%sSmallest%s:\n", green, reset);
+    printf("\n[%sTiniest%s]\n", green, reset);
     if (smallest[0]) printf(" - %s\n", smallest);
 
     if (dpp->smallest_gb > 0) {
-        printf(" * %s%lu%s GiB\n * %s%lu%s MiB\n",
+        printf(" * %s%lu%s GiB\n * %lu MiB\n",
             green, dpp->smallest_gb, reset,
-            green, dpp->smallest_mb, reset);
+            dpp->smallest_mb);
     }
     else if (dpp->smallest_mb > 0) {
-        printf(" * %s%lu%s MiB\n * %s%lu%s KiB\n",
+        printf(" * %s%lu%s MiB\n * %lu KiB\n",
             green, dpp->smallest_mb, reset,
-            green, dpp->smallest_kb, reset);
+            dpp->smallest_kb);
     }
     else if (dpp->smallest_kb > 0) {
-        printf(" * %s%lu%s KiB\n * %s%lu%s bytes\n",
+        printf(" * %s%lu%s KiB\n * %lu bytes\n",
             green, dpp->smallest_kb, reset,
-            green, dpp->smallest_bytes, reset);
+            dpp->smallest_bytes);
             
     } else {
         printf(" * %s%lu%s bytes\n",

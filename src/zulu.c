@@ -30,10 +30,10 @@ int main(int argc, char **argv) {
         searchFolder(cwd);
     }
     else if (strcmp(argv[1], "-h") == 0) {
-        stdout_ui(1);
+        stdout_ui(SHOW_HELP);
     }
     else if (strcmp(argv[1], "-v") == 0) {
-        stdout_ui(0);
+        stdout_ui(SHOW_VER);
     }
     else if (strcmp(argv[1], "-b") == 0) {
         listBytes(argc, argv, cwd);
@@ -86,7 +86,7 @@ void listAll(int argc, char **argv, const char *cwd) {
 
     if (argc > 2 && strcmp(argv[2], "--ls") == 0) {
         list_files = 1;
-        printf("\n==== %sFolder list%s ====\n", cyan, reset);
+        printf("\n==== %sFolder List%s ====\n", cyan, reset);
     }
         
     searchFolder(cwd);
@@ -106,7 +106,7 @@ void listPath(int argc, char **argv) {
     if (argc > 3 && strcmp(argv[2], "--ls") == 0) {
         list_files = 1;
 
-        printf("\n==== %sFolder list%s ====\n", cyan, reset);
+        printf("\n==== %sFolder List%s ====\n", cyan, reset);
 
         searchFolder(argv[3]);
     }

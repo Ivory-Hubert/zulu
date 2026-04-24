@@ -12,6 +12,9 @@
 #include <sys/sysmacros.h>
 
 
+#define SHOW_VER 0
+#define SHOW_HELP 1
+
 #define KIB (1ULL << 10)
 #define MIB (1ULL << 20)
 #define GIB (1ULL << 30)
@@ -78,7 +81,7 @@ void sizeMath(struct fileParam *fpp);
 void byteMath(const char *raw);
 void fileData(const char *path);
 
-// ui.
+// ui.c
 void stdout_ui(int mode);
 void display(struct displayParam *dpp, int timer_ms);
 void liteDisplay(struct displayParam *dpp, int timer_ms);
