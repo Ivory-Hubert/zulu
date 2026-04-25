@@ -59,21 +59,27 @@ int searchFolder(const char *path) {
             continue;
         }
         
-        if(!lite_mode) {
+        if(!lite_mode && !byte_list) {
             if (fpp.file_count == 0) {
-                fpp.min_size = st.st_size;
-                fpp.max_size = st.st_size;
+                fpp.min_size = (
+                    show_blocks ? st.st_blocks : st.st_size);
+                fpp.max_size = (
+                    show_blocks ? st.st_blocks : st.st_size);
 
                 snprintf(biggest, sizeof(biggest), "%s", de->d_name);
                 snprintf(smallest, sizeof(smallest), "%s", de->d_name);
             }
 
             if ((u64)st.st_size > fpp.max_size) {
-                fpp.max_size = st.st_size;
+                fpp.max_size = (
+                    show_blocks ? st.st_blocks : st.st_size);
+
                 snprintf(biggest, sizeof(biggest), "%s", de->d_name);
             }
             if ((u64)st.st_size < fpp.min_size) {
-                fpp.min_size = st.st_size;
+                fpp.min_size = (
+                    show_blocks ? st.st_blocks : st.st_size);
+                
                 snprintf(smallest, sizeof(smallest), "%s", de->d_name);
             }
             
@@ -93,7 +99,8 @@ int searchFolder(const char *path) {
         }
         
         fpp.file_count++;
-        fpp.total_size += st.st_size;
+        fpp.total_size += (
+            show_blocks ? st.st_blocks : st.st_size);
     }
 
     closedir(dr);
@@ -108,6 +115,12 @@ void sizeMath(struct fileParam *fpp) {
     
     dpp.file_count = fpp->file_count;
     dpp.folder_count = fpp->folder_count;
+
+    if (show_blocks) {
+        fpp->total_size = fpp->total_size * 512;
+        fpp->max_size = fpp->max_size * 512;
+        fpp->min_size = fpp->min_size * 512;
+    }
 
     
     if (fpp->total_size >= GIB) {

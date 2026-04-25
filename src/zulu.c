@@ -12,6 +12,7 @@
 volatile int lite_mode = 0;
 volatile int list_files = 0;
 volatile int byte_list = 0;
+volatile int show_blocks = 0;
 
 char biggest[1024] = { 0 };
 char smallest[1024] = { 0 };
@@ -38,10 +39,14 @@ int main(int argc, char **argv) {
     else if (strcmp(argv[1], "-b") == 0) {
         listBytes(argc, argv, cwd);
     }
-    else if (strcmp(argv[1], "-s") == 0) {
+    else if (strcmp(argv[1], "-s") == 0 ||
+        strcmp(argv[1], "-sa") == 0) {
+
         listAll(argc, argv, cwd);
     }
-    else if (strcmp(argv[1], "-p") == 0) {
+    else if (strcmp(argv[1], "-p") == 0 ||
+        strcmp(argv[1], "-pa") == 0) {
+
         listPath(argc, argv);
     }
     else if (strcmp(argv[1], "-c") == 0) {
@@ -82,8 +87,10 @@ void listBytes(int argc, char **argv, const char *cwd) {
 
 void listAll(int argc, char **argv, const char *cwd) {
     // zulu -s [--ls]
-    printf("%szulu%s> Showing '%s'\n", cyan, reset, cwd);
+    printf("%szulu%s> '%s'\n", cyan, reset, cwd);
 
+    show_blocks = (strcmp(argv[1], "-sa") == 0);
+    
     if (argc > 2 && strcmp(argv[2], "--ls") == 0) {
         list_files = 1;
         printf("\n==== %sFolder List%s ====\n", cyan, reset);
@@ -99,7 +106,9 @@ void listPath(int argc, char **argv) {
         return;
     }
 
-    printf("%szulu%s> Showing '%s'\n",
+    show_blocks = (strcmp(argv[1], "-pa") == 0);
+    
+    printf("%szulu%s> '%s'\n",
         cyan, reset,
         (argc > 3 ? argv[3] : argv[2]));
 

@@ -12,12 +12,15 @@
 static const char usage[] = 
     "Usage: zulu [-flag] [optional arg] <required arg>\n\n"
     "    -s [--ls]         Summary of current directory\n"
+    "    -sa\n"            
     "    -p [--ls] <PATH>  Summary of provided directory\n"
+    "    -pa\n"
     "    -b [PATH]         List the current or chosen directory with byte sizes\n"
     "    -c <bytes>        Convert provided bytes and display results\n"
     "    -f <PATH>         Detailed file data, for a CWD file or provided file path\n"
     "    -h                Display this help message and exit\n"
     "    -v                Display version number and exit\n"
+    "\nAlt. flags '-sa' & '-pa' show allocated sizes on disk, otherwise behave the same."
     "\nOptional '--ls' flag will also list the files/folders that Zulu counts.\n"
     "\nIf no flags are provided Zulu will display the bare minimum, without colors.\n"
     "\n";
@@ -126,14 +129,18 @@ void display(struct displayParam *dpp, int timer_ms) {
         cyan, dpp->file_count, reset);
     printf("\nFolders: %s%lu%s\n",
         cyan, dpp->folder_count, reset);
-    
-    
+
+
+    static char mode[12];
+    snprintf(mode, sizeof(mode),
+        "%s", show_blocks ? "*Allocated" : "*Apparent");
+        
     if (timer_ms > 0) {
-        printf("\n(Took %s%d%s ms)\n",
-            cyan, timer_ms, reset);
+        printf("\n%s (%s%d%s ms)\n",
+            mode, cyan, timer_ms, reset);
     } else {
-        printf("\n(Took < %s%d%s ms)\n",
-            cyan, timer_ms, reset);
+        printf("\n%s (< %s%d%s ms)\n",
+            mode, cyan, timer_ms, reset);
     }
 
     
@@ -169,11 +176,13 @@ void liteDisplay(struct displayParam *dpp, int timer_ms) {
     printf("\nFiles:   %lu", dpp->file_count);
     printf("\nFolders: %lu\n", dpp->folder_count);
 
+
+    printf("\n*Apparent");
     
     if (timer_ms > 0) {
-        printf("\n(Took %d ms)\n", timer_ms);
+        printf(" (%d ms)\n", timer_ms);
     } else {
-        printf("\n(Took < %d ms)\n", timer_ms);
+        printf(" (< %d ms)\n", timer_ms);
     }
     
     exit(0);

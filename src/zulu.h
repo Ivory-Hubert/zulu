@@ -36,6 +36,7 @@ static const char reset[] = "\x1b[m";
 extern volatile int lite_mode;
 extern volatile int list_files;
 extern volatile int byte_list;
+extern volatile int show_blocks;
 
 extern clock_t beginning;
 

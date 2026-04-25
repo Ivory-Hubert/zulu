@@ -4,5 +4,5 @@ build/
 core
 *.core
 
-*~
-*.swp
+src/*~
+src/*.swp
