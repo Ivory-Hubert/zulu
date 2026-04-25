@@ -11,18 +11,19 @@
 
 static const char usage[] = 
     "Usage: zulu [-flag] [optional arg] <required arg>\n\n"
+    "    -a                Minimal display in allocated sizes\n"
     "    -s [--ls]         Summary of current directory\n"
     "    -sa\n"            
     "    -p [--ls] <PATH>  Summary of provided directory\n"
     "    -pa\n"
     "    -b [PATH]         List the current or chosen directory with byte sizes\n"
     "    -c <bytes>        Convert provided bytes and display results\n"
-    "    -f <PATH>         Detailed file data, for a CWD file or provided file path\n"
+    "    -f <PATH>         Detailed file stats, for a CWD file or provided file path\n"
     "    -h                Display this help message and exit\n"
     "    -v                Display version number and exit\n"
     "\nAlt. flags '-sa' & '-pa' show allocated sizes on disk, otherwise behave the same."
     "\nOptional '--ls' flag will also list the files/folders that Zulu counts.\n"
-    "\nIf no flags are provided Zulu will display the bare minimum, without colors.\n"
+    "\nIf no flags are provided Zulu will display the bare minimum, in apparent sizes.\n"
     "\n";
 
 static const char version[] = 
@@ -177,12 +178,14 @@ void liteDisplay(struct displayParam *dpp, int timer_ms) {
     printf("\nFolders: %lu\n", dpp->folder_count);
 
 
-    printf("\n*Apparent");
+    static char mode[12];
+    snprintf(mode, sizeof(mode),
+        "%s", show_blocks ? "*Allocated" : "*Apparent");
     
     if (timer_ms > 0) {
-        printf(" (%d ms)\n", timer_ms);
+        printf("\n%s (%d ms)\n", mode, timer_ms);
     } else {
-        printf(" (< %d ms)\n", timer_ms);
+        printf("\n%s (< %d ms)\n", mode, timer_ms);
     }
     
     exit(0);

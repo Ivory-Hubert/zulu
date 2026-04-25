@@ -30,6 +30,13 @@ int main(int argc, char **argv) {
         lite_mode = 1;
         searchFolder(cwd);
     }
+    else if (strcmp(argv[1], "-a") == 0) {
+        printf("zulu> '%s'\n", cwd);
+        
+        lite_mode = 1;
+        show_blocks = 1;
+        searchFolder(cwd);
+    }
     else if (strcmp(argv[1], "-h") == 0) {
         stdout_ui(SHOW_HELP);
     }
