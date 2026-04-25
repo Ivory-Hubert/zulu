@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 [DA](https://github.com/Ivory-Hubert/Developer-Assistant) assures the format stays consistent.
 
+## [Unreleased]
+
+### Changed
+- **Unit math & display**
+
+Changed the math engine a bit, so now for every size category (*total, biggest, smallest*) two units are always displayed. So: `GiB | MiB`, `MiB | KiB`, `KiB & bytes`, or just bytes. Also the basic no colour output will now show the second unit aswell. 
+
+- **UI updates**
+
+Yet again some more UI tweaking going on. I also now count the subfolders that Zulu finds and display that count along side the file count too. So now you get a good picture of a folders contents without the overhead of recursion. Also made the summary display more structured. 
+
+
 ## [0.1.1] - 2026-04-24
 
 ### Added
@@ -15,7 +27,7 @@ This one is simple and effective, takes a raw byte count and converts it to KiB,
 
 - **File stats**
 
-Now one can' say it's just a dumb file size tool, drop a file name from your CWD or a file path to Zulu with the `-f` flag and you get similar output to simple `stat`, Zulu just follows symlinks automatically and formats the output (*no colors*).
+Now one can't say it's just a dumb file size tool, drop a file name from your CWD or a file path to Zulu with the `-f` flag and you get similar output to simple `stat`, Zulu just follows symlinks automatically and formats the output (*no colors*).
 
 ### Changed
 - **For the machines**
