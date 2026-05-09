@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 [DA](https://github.com/Ivory-Hubert/Developer-Assistant) assures the format stays consistent.
 
-## [0.1.2]
+## [0.1.2] - 2026-05-09
 
 ### Added
 - **Allocated sizes**

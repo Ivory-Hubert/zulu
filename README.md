@@ -29,7 +29,7 @@ See also:
 > [!NOTE]
 > Zulu does not report any metadata other than file size, *outside of file stat view*. Does not go into subdirectories. Ignores non-files entirely, *will still list the subfolders*.
 
-When it comes to colored output, Zulu checks for NO_COLOR and ZULU_NO_COLOR environment variables on startup.
+When it comes to colored output, Zulu checks for `NO_COLOR` and `ZULU_NO_COLOR` environment variables on startup.
 Whether you don't want colors at all or just no Zulu colors, you're covered. There's still some bold text though.
 
 ## About
