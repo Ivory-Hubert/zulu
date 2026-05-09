@@ -8,6 +8,9 @@
 
 #include "zulu.h"
 
+char biggest[1024] = { 0 };
+char smallest[1024] = { 0 };
+
 
 int searchFolder(const char *path) {
     struct dirent *de;
@@ -46,7 +49,7 @@ int searchFolder(const char *path) {
             fpp.folder_count++;
 
             if (list_files) {
-                printf(" %s%s/%s\n", grey, de->d_name, reset);
+                printf(" %s%s/%s\n", GREY, de->d_name, RESET);
             }
         }
         
@@ -55,13 +58,13 @@ int searchFolder(const char *path) {
         }
 
         if ((u64)st.st_size > (1ULL << 40)) {
-            printf("%szulu%s> '%s' skipped\n", red, reset, de->d_name);
+            printf("%szulu%s> '%s' skipped\n", RED, RESET, de->d_name);
             continue;
         }
 
         size_t size = show_blocks ? st.st_blocks : st.st_size;
         
-        if(!lite_mode && !byte_list) {
+        if (!(lite_mode || byte_list)) {
             if (fpp.file_count == 0) {
                 fpp.min_size = size;
                 fpp.max_size = size;
@@ -85,10 +88,10 @@ int searchFolder(const char *path) {
         }
 
         if (byte_list) {
-            if (isatty(STDOUT_FILENO)) {
+            if (!is_piped) {
                 printf(" - %-32.32s | %s%lu%s\n",
                     de->d_name,
-                    cyan, st.st_size, reset);
+                    CYAN, st.st_size, RESET);
             } else {
                 printf("%s|%lu\n",
                     de->d_name,
@@ -107,8 +110,6 @@ int searchFolder(const char *path) {
 
 void sizeMath(struct fileParam *fpp) {
     struct displayParam dpp = { 0 };
-
-    //if (fpp->file_count == 0) fpp->min_size = 0;
     
     dpp.file_count = fpp->file_count;
     dpp.folder_count = fpp->folder_count;
@@ -206,9 +207,9 @@ void byteMath(const char *raw) {
 
     printf("zulu> Results:\n");
     printf(" * %s%lu%s GiB\n * %s%lu%s MiB\n * %s%lu%s KiB\n\n",
-        cyan, gib, reset,
-        cyan, mib, reset,
-        cyan, kib, reset);
+        CYAN, gib, RESET,
+        CYAN, mib, RESET,
+        CYAN, kib, RESET);
         
 }
 
@@ -270,7 +271,7 @@ void fileData(const char *path) {
     printf("Mode:          %jo (octal)\n", (uintmax_t)st.st_mode);
     printf("Link count:    %ju\n", (uintmax_t)st.st_nlink);
 
-    printf("\nPreferred I/O block size: %jd bytes\n",
+    printf("\nPreferRED I/O block size: %jd bytes\n",
         (intmax_t)st.st_blksize);
     printf("File size:                %jd bytes\n",
         (intmax_t)st.st_size);

@@ -25,23 +25,32 @@
 
 typedef uint64_t u64;
 
-
-static const char yellow[] = "\x1b[38;5;222m";
-static const char green[] = "\x1b[38;5;78m";
-static const char grey[] = "\x1b[38;5;8m";
-static const char red[] = "\x1b[38;5;160m";
-static const char cyan[] = "\x1b[38;5;14m";
-static const char reset[] = "\x1b[m";
-
+extern volatile int no_colors;
+extern volatile int is_piped;
 extern volatile int lite_mode;
 extern volatile int list_files;
 extern volatile int byte_list;
 extern volatile int show_blocks;
 
 extern clock_t beginning;
-
 extern char biggest[1024];
 extern char smallest[1024];
+
+
+#define ANSI_RESET  "\x1b[m"
+#define ANSI_YELLOW "\x1b[38;5;222m"
+#define ANSI_GREEN  "\x1b[38;5;78m"
+#define ANSI_GREY   "\x1b[38;5;242m"
+#define ANSI_RED    "\x1b[38;5;160m"
+#define ANSI_CYAN   "\x1b[38;5;14m"
+#define ANSI_BOLD   "\x1b[1m"
+
+#define RESET  (is_piped ? "" : ANSI_RESET)
+#define YELLOW (is_piped ? "" : no_colors ? ANSI_BOLD : ANSI_YELLOW)
+#define GREEN  (is_piped ? "" : no_colors ? ANSI_BOLD : ANSI_GREEN)
+#define CYAN   (is_piped ? "" : no_colors ? ANSI_BOLD : ANSI_CYAN)
+#define GREY   (no_colors ? "" : ANSI_GREY)
+#define RED    (no_colors ? "" : ANSI_RED)
 
 
 struct fileParam {
