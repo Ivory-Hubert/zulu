@@ -271,7 +271,7 @@ void fileData(const char *path) {
     printf("Mode:          %jo (octal)\n", (uintmax_t)st.st_mode);
     printf("Link count:    %ju\n", (uintmax_t)st.st_nlink);
 
-    printf("\nPreferRED I/O block size: %jd bytes\n",
+    printf("\nPreferred I/O block size: %jd bytes\n",
         (intmax_t)st.st_blksize);
     printf("File size:                %jd bytes\n",
         (intmax_t)st.st_size);
