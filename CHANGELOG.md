@@ -6,7 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 [DA](https://github.com/Ivory-Hubert/Developer-Assistant) assures the format stays consistent.
 
-## [Unreleased]
+## [0.1.2]
+
+### Added
+- **Allocated sizes**
+
+Now there are allocated size alt. flags for every output mode. The UI also adapts accordingly.
+
+- **No color mode**
+
+Now Zulu checks for `NO_COLOR` and `ZULU_NO_COLOR` environment variables, so if you just hate colors or simply Zulu's colors you'll get your will. Also now the whole output is pipe/redirection friendly, in simple no color mode there's still bold text,
+but when piped the text is fully ANSI code free.
 
 ### Changed
 - **Unit math & display**
@@ -16,6 +26,11 @@ Changed the math engine a bit, so now for every size category (*total, biggest, 
 - **UI updates**
 
 Yet again some more UI tweaking going on. I also now count the subfolders that Zulu finds and display that count along side the file count too. So now you get a good picture of a folders contents without the overhead of recursion. Also made the summary display more structured. 
+
+### Fixed
+- **Biggest/smallest**
+
+That logic was flawed, the bug only showed up in two file directories, but luckly I found it. Code wise that fix made the whole readdir() loop cleaner too. 
 
 
 ## [0.1.1] - 2026-04-24
@@ -27,7 +42,7 @@ This one is simple and effective, takes a raw byte count and converts it to KiB,
 
 - **File stats**
 
-Now one can't say it's just a dumb file size tool, drop a file name from your CWD or a file path to Zulu with the `-f` flag and you get similar output to simple `stat`, Zulu just follows symlinks automatically and formats the output (*no colors*).
+Drop a file name from your CWD or a file path to Zulu with the `-f` flag and you get similar output to simple `stat`, Zulu just follows symlinks automatically and formats the output (*no colors*).
 
 ### Changed
 - **For the machines**
