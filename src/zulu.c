@@ -14,6 +14,7 @@ volatile int lite_mode = 0;
 volatile int list_files = 0;
 volatile int byte_list = 0;
 volatile int show_blocks = 0;
+volatile int human_sizes = 0;
 
 clock_t beginning = { 0 };
 
@@ -49,13 +50,16 @@ int main(int argc, char **argv) {
         show_blocks = 1;
         searchFolder(cwd);
     }
-    else if (strcmp(argv[1], "-h") == 0) {
+    else if (strcmp(argv[1], "-h") == 0 ||
+        strcmp(argv[1], "--help") == 0) {
+
         stdout_ui(SHOW_HELP);
     }
     else if (strcmp(argv[1], "-v") == 0) {
         stdout_ui(SHOW_VER);
     }
-    else if (strcmp(argv[1], "-b") == 0) {
+    else if (strcmp(argv[1], "-l") == 0 ||
+        strcmp(argv[1], "-lh") == 0) {
         listBytes(argc, argv, cwd);
     }
     else if (strcmp(argv[1], "-s") == 0 ||
@@ -84,23 +88,17 @@ int main(int argc, char **argv) {
 void listBytes(int argc, char **argv, const char *cwd) {
     // zulu -b [PATH]
     byte_list = 1;
+    human_sizes = (strcmp(argv[1], "-lh") == 0);
 
     printf("Listing: %s\n\n", (argc > 2 ? argv[2] : cwd));
 
     if (!is_piped) {
-        printf(" %-34s | Bytes\n", "File");
-        printf(" %-34s |------\n", "----");
+        printf(" %-34s | Sizes\n", "  File");
+        printf(" %-34s |------\n", "------");
     }
-    
-    if (argc > 2) {
-        int count = searchFolder(argv[2]);
 
-        printf("\nCount: %d\n", count);
-        return;
-    };
-
-    int count = searchFolder(cwd);
-        
+    int count = searchFolder(argc > 2 ? argv[2] : cwd);
+            
     printf("\nCount: %d\n", count);
 }
 

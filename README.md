@@ -20,7 +20,7 @@ That's the basic output and summary in action:
 * Byte output mode that skips math entirely, only lists as it reads. *This mode outputs in a parser-friendly format when piped*.
 * Built-in byte converter, displays provided bytes in GiB, MiB & KiB.
 * Can display detailed file stats for CWD files or full paths, *follows symlinks by default*.
-* Uses colors by default, but is also redirection friendly and there's a no color mode, see below for more details.
+* Uses colors by default, but is also redirection friendly and there's a colorless mode, see below for more details.
 
 See also:
 * Some more output [screenshots](./docs/pics/README.md)

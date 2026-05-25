@@ -89,13 +89,22 @@ int searchFolder(const char *path) {
 
         if (byte_list) {
             if (!is_piped) {
-                printf(" - %-32.32s | %s%lu%s\n",
-                    de->d_name,
-                    CYAN, st.st_size, RESET);
+                if (human_sizes) {
+                    struct humanParam hpp = { 0 };
+                    humanOutput(&hpp, size);
+
+                    printf(" - %s%-32.32s%s | %s%-6lu %s%s\n",
+                        hpp.color, de->d_name, RESET,
+                        hpp.color, hpp.convert, hpp.unit, RESET);
+                        
+                } else {
+                    printf(" - %-32.32s | %s%lu%s\n",
+                        de->d_name,
+                        CYAN, size, RESET);
+                }
+                
             } else {
-                printf("%s|%lu\n",
-                    de->d_name,
-                    st.st_size);
+                printf("%s|%lu\n", de->d_name, size);
             }
         }
         
@@ -206,11 +215,30 @@ void byteMath(const char *raw) {
     u64 kib = (val + HALF_KIB) / KIB;
 
     printf("zulu> Results:\n");
-    printf(" * %s%lu%s GiB\n * %s%lu%s MiB\n * %s%lu%s KiB\n\n",
-        CYAN, gib, RESET,
-        CYAN, mib, RESET,
-        CYAN, kib, RESET);
+    printf(" * %s%lu%s GiB\n * %s%lu%s MiB\n * %lu KiB\n\n",
+        RED, gib, RESET,
+        YELLOW, mib, RESET,
+        kib);
         
+}
+
+void humanOutput(struct humanParam *hpp, size_t size) {
+    if (size >= GIB) {
+        hpp->convert = (size + HALF_GIB) / GIB;
+        snprintf(hpp->unit, sizeof(hpp->unit), "GiB");
+        snprintf(hpp->color, sizeof(hpp->color), RED);
+    }
+    else if (size >= MIB) {
+        hpp->convert = (size + HALF_MIB) / MIB;
+        snprintf(hpp->unit, sizeof(hpp->unit), "MiB");
+        snprintf(hpp->color, sizeof(hpp->color), YELLOW);
+    }
+    else if (size >= KIB) {
+        hpp->convert = (size + HALF_KIB) / KIB;
+        snprintf(hpp->unit, sizeof(hpp->unit), "KiB");
+    }
+    else { hpp->convert = size; }
+
 }
 
 void fileData(const char *path) {

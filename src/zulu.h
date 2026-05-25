@@ -31,6 +31,7 @@ extern volatile int lite_mode;
 extern volatile int list_files;
 extern volatile int byte_list;
 extern volatile int show_blocks;
+extern volatile int human_sizes;
 
 extern clock_t beginning;
 extern char biggest[1024];
@@ -49,8 +50,8 @@ extern char smallest[1024];
 #define YELLOW (is_piped ? "" : no_colors ? ANSI_BOLD : ANSI_YELLOW)
 #define GREEN  (is_piped ? "" : no_colors ? ANSI_BOLD : ANSI_GREEN)
 #define CYAN   (is_piped ? "" : no_colors ? ANSI_BOLD : ANSI_CYAN)
+#define RED    (is_piped ? "" : no_colors ? ANSI_BOLD : ANSI_RED)
 #define GREY   (no_colors ? "" : ANSI_GREY)
-#define RED    (no_colors ? "" : ANSI_RED)
 
 
 struct fileParam {
@@ -78,6 +79,13 @@ struct displayParam {
     u64 folder_count;
 };
 
+struct humanParam {
+    char color[16];
+    char unit[6];
+    u64 convert;
+};
+
+
 // zulu.c
 void listBytes(int argc, char **argv, const char *cwd);
 void listAll(int argc, char **argv, const char *cwd);
@@ -89,6 +97,7 @@ void auditFile(int argc, char **argv, const char *cwd);
 int searchFolder(const char *path);
 void sizeMath(struct fileParam *fpp);
 void byteMath(const char *raw);
+void humanOutput(struct humanParam *hpp, size_t size);
 void fileData(const char *path);
 
 // ui.c
