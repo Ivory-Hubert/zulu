@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
 
 
     if (argc < 2) {
-        printf("zulu> Type 'zulu -h' for help\n");
+        printf("zulu> Type 'zulu -h' for usage\n");
 
         lite_mode = 1;
         searchFolder(cwd);
@@ -60,17 +60,13 @@ int main(int argc, char **argv) {
     }
     else if (strcmp(argv[1], "-l") == 0 ||
         strcmp(argv[1], "-lh") == 0) {
+
         listBytes(argc, argv, cwd);
     }
     else if (strcmp(argv[1], "-s") == 0 ||
         strcmp(argv[1], "-sa") == 0) {
 
-        listAll(argc, argv, cwd);
-    }
-    else if (strcmp(argv[1], "-p") == 0 ||
-        strcmp(argv[1], "-pa") == 0) {
-
-        listPath(argc, argv);
+        summary(argc, argv, cwd);
     }
     else if (strcmp(argv[1], "-c") == 0) {
         convert(argc, argv);
@@ -86,7 +82,7 @@ int main(int argc, char **argv) {
 }
 
 void listBytes(int argc, char **argv, const char *cwd) {
-    // zulu -b [PATH]
+    // zulu -l(h) [PATH]
     byte_list = 1;
     human_sizes = (strcmp(argv[1], "-lh") == 0);
 
@@ -102,42 +98,40 @@ void listBytes(int argc, char **argv, const char *cwd) {
     printf("\nCount: %d\n", count);
 }
 
-void listAll(int argc, char **argv, const char *cwd) {
-    // zulu -s [--ls]
-    printf("%szulu%s> '%s'\n", CYAN, RESET, cwd);
+void summary(int argc, char **argv, const char *cwd) {
+    // zulu -s(a) [--ls] [PATH]
+    const char *path = cwd;
 
-    show_blocks = (strcmp(argv[1], "-sa") == 0);
-    
-    if (argc > 2 && strcmp(argv[2], "--ls") == 0) {
-        list_files = 1;
-        printf("\n====== %sList%s ======\n", CYAN, RESET);
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-s") == 0) {
+            continue;
+        }
+        else if (strcmp(argv[i], "-sa") == 0) {
+            show_blocks = 1;
+        }
+        else if (strcmp(argv[i], "--ls") == 0) {
+            list_files = 1;
+        }
+        else if (strcmp(argv[i], "--lss") == 0) {
+            list_files = 1;
+            human_sizes = 1;
+        }
+        else {
+            path = argv[i];
+        }
     }
-        
-    searchFolder(cwd);
-}
 
-void listPath(int argc, char **argv) {
-    // zulu -p [--ls] <PATH>
-    if (argc < 3) {
-        printf("%szulu%s> No directory provided\n", RED, RESET);
+    if (path == NULL || strlen(path) == 0) {
+        printf("%szulu%s> No directory provided and CWD is unavailable\n", RED, RESET);
         return;
     }
-
-    show_blocks = (strcmp(argv[1], "-pa") == 0);
     
-    printf("%szulu%s> '%s'\n",
-        CYAN, RESET,
-        (argc > 3 ? argv[3] : argv[2]));
+    printf("%szulu%s> '%s'\n", CYAN, RESET, path);
 
-    if (argc > 3 && strcmp(argv[2], "--ls") == 0) {
-        list_files = 1;
+    if (list_files)
+        printf("\n======= %sList%s =======\n", CYAN, RESET);
 
-        printf("\n====== %sList%s ======\n", CYAN, RESET);
-
-        searchFolder(argv[3]);
-    }
-
-    searchFolder(argv[2]);
+    searchFolder(path);
 }
 
 void convert(int argc, char **argv) {

@@ -11,46 +11,41 @@
 static const char usage[] = 
     "Usage: zulu [-flag] [optional arg] <required arg>\n"
     "\n"
-    "    -a                Minimal display in allocated sizes\n"
-    "    -s [--ls]         Summary of current directory\n"
-    "    -sa\n"            
-    "    -p [--ls] <PATH>  Summary of provided directory\n"
-    "    -pa\n"
-    "    -l [PATH]         List the current or chosen directory with byte sizes\n"
-    "    -lh               'human' output flag, sizes shown in kib/mib/gib as needed\n"
+    "    -a                Minimal display in allocated sizes\n"            
+    "    -s  [--ls] [PATH] Summary of the current or provided directory\n"
+    "    -sa [--lss]       '-sa' shows allocated sizes on disk, otherwise behaves the same\n"
+    "                      '--ls' also lists the files/directories counted\n"
+    "                      '--lss' adds converted file sizes to the list\n"
     "\n"
-    "    -c <bytes>        Convert provided bytes and display results\n"
-    "    -f <PATH>         Detailed file stats, for a CWD file or provided file path\n"
+    "    -l  [PATH]        List the current or chosen directory in a table format\n"
+    "    -lh               'human' output flag, sizes shown in kib/mib/gib as needed\n"
+    "                      When piped outputs with no conversion, formatting or colors\n"
+    "\n"
+    "    -c  <bytes>       Convert provided bytes and display results\n"
+    "    -f  <PATH>        Detailed file stats, for a CWD file or provided file path\n"
     "    -h                Display this help message and exit\n"
     "    --help\n"
     "    -v                Display version number and exit\n"
-    "\n"
-    "Alt. flags '-sa' & '-pa' show allocated sizes on disk, otherwise behave the same.\n"
-    "Optional '--ls' flag also lists the files/directories that Zulu counts.\n"
     "\n"
     "If no flags are provided Zulu will display the bare minimum, in apparent sizes.\n"
     "Use the 'NO_COLOR' or 'ZULU_NO_COLOR' env. variables to toggle colors.\n"
     "\n";
 
 static const char version[] = 
-    "zulu - 0.1.3\n\n"
+    "zulu - 0.1.4\n\n"
     "(C) 2026 Ivori Huobolainen\n"
     "Licensed under the GNU GPL v3 or later\n"
     "<https://www.gnu.org/licenses/gpl-3.0.html>\n";
 
 
 void stdout_ui(int mode) {
-    if (mode) {
-        printf("%s", usage);
-    }
-    else {
-        printf("%s", version);
-    }
+    if (mode) { printf("%s", usage); }
+    else { printf("%s", version); }
 }
 
 void display(struct displayParam *dpp, int timer_ms) {
     if (list_files) {
-        printf("\n====== %sData%s ======",
+        printf("\n======= %sData%s =======",
             CYAN, RESET);
     }
 
@@ -152,7 +147,7 @@ void display(struct displayParam *dpp, int timer_ms) {
 
     
     if (list_files) {
-        printf("==================\n");
+        printf("====================\n");
     }
     
     exit(0);

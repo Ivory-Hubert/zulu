@@ -49,7 +49,7 @@ int searchFolder(const char *path) {
             fpp.folder_count++;
 
             if (list_files) {
-                printf(" %s%s/%s\n", GREY, de->d_name, RESET);
+                printf("%s%s/%s\n", GREY, de->d_name, RESET);
             }
         }
         
@@ -84,7 +84,19 @@ int searchFolder(const char *path) {
                 snprintf(smallest, sizeof(smallest), "%s", de->d_name);
             }
             
-            if (list_files) printf(" - %s\n", de->d_name);
+            if (list_files) {
+                if (human_sizes) {
+                    struct humanParam hpp = { 0 };
+                    humanOutput(&hpp, size);
+
+                    printf(" - %s%-16.16s %s%-4lu %s%s\n",
+                        hpp.color, de->d_name,
+                        ITALIC, hpp.convert, hpp.unit, RESET);
+                        
+                } else {
+                    printf(" - %s\n", de->d_name);
+                }
+            }
         }
 
         if (byte_list) {
@@ -93,7 +105,7 @@ int searchFolder(const char *path) {
                     struct humanParam hpp = { 0 };
                     humanOutput(&hpp, size);
 
-                    printf(" - %s%-32.32s%s | %s%-6lu %s%s\n",
+                    printf(" - %s%-32.32s%s | %s%-4lu %s%s\n",
                         hpp.color, de->d_name, RESET,
                         hpp.color, hpp.convert, hpp.unit, RESET);
                         
@@ -223,6 +235,9 @@ void byteMath(const char *raw) {
 }
 
 void humanOutput(struct humanParam *hpp, size_t size) {
+    if (show_blocks)
+        size = size * 512;
+    
     if (size >= GIB) {
         hpp->convert = (size + HALF_GIB) / GIB;
         snprintf(hpp->unit, sizeof(hpp->unit), "GiB");

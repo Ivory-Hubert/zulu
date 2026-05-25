@@ -38,6 +38,7 @@ extern char biggest[1024];
 extern char smallest[1024];
 
 
+#define ANSI_ITALIC "\x1b[3m"
 #define ANSI_RESET  "\x1b[m"
 #define ANSI_YELLOW "\x1b[38;5;222m"
 #define ANSI_GREEN  "\x1b[38;5;78m"
@@ -46,6 +47,7 @@ extern char smallest[1024];
 #define ANSI_CYAN   "\x1b[38;5;14m"
 #define ANSI_BOLD   "\x1b[1m"
 
+#define ITALIC (is_piped ? "" : ANSI_ITALIC)
 #define RESET  (is_piped ? "" : ANSI_RESET)
 #define YELLOW (is_piped ? "" : no_colors ? ANSI_BOLD : ANSI_YELLOW)
 #define GREEN  (is_piped ? "" : no_colors ? ANSI_BOLD : ANSI_GREEN)
@@ -88,8 +90,7 @@ struct humanParam {
 
 // zulu.c
 void listBytes(int argc, char **argv, const char *cwd);
-void listAll(int argc, char **argv, const char *cwd);
-void listPath(int argc, char **argv);
+void summary(int argc, char **argv, const char *cwd);
 void convert(int argc, char **argv);
 void auditFile(int argc, char **argv, const char *cwd);
 
@@ -104,3 +105,4 @@ void fileData(const char *path);
 void stdout_ui(int mode);
 void display(struct displayParam *dpp, int timer_ms);
 void liteDisplay(struct displayParam *dpp, int timer_ms);
+
