@@ -13,19 +13,18 @@ static const char usage[] =
     "\n"
     "    -a                Minimal display in allocated sizes\n"            
     "    -s  [--ls] [PATH] Summary of the current or provided directory\n"
-    "    -sa [--lss]       '-sa' shows allocated sizes on disk, otherwise behaves the same\n"
+    "    -sa [--lsu]       '-sa' shows allocated sizes on disk\n"
     "                      '--ls' also lists the files/directories counted\n"
-    "                      '--lss' adds converted file sizes to the list\n"
+    "                      '--lsu' adds converted size units to the list\n"
     "\n"
     "    -l  [PATH]        List the current or chosen directory in a table format\n"
     "    -lh               'human' output flag, sizes shown in kib/mib/gib as needed\n"
-    "                      When piped outputs with no conversion, formatting or colors\n"
+    "                      When piped outputs with no conversion and formatting\n"
     "\n"
     "    -c  <bytes>       Convert provided bytes and display results\n"
     "    -f  <PATH>        Detailed file stats, for a CWD file or provided file path\n"
-    "    -h                Display this help message and exit\n"
-    "    --help\n"
-    "    -v                Display version number and exit\n"
+    "    -H, --help        Display this help message and exit\n"
+    "    -V, --version     Display version number and exit\n"
     "\n"
     "If no flags are provided Zulu will display the bare minimum, in apparent sizes.\n"
     "Use the 'NO_COLOR' or 'ZULU_NO_COLOR' env. variables to toggle colors.\n"
@@ -38,12 +37,37 @@ static const char version[] =
     "<https://www.gnu.org/licenses/gpl-3.0.html>\n";
 
 
-void stdout_ui(int mode) {
-    if (mode) { printf("%s", usage); }
-    else { printf("%s", version); }
+void stdout_ui(int mode, const char* path) {
+
+    if (mode == SHOW_VER) {
+        printf("%s", version);
+    }
+    else if (mode == SHOW_HELP) {
+        printf("%s", usage);
+    }
+    else if (mode == SHOW_SUM_UI) {
+        printf("%szulu%s> '%s'\n", CYAN, RESET, path);
+
+        if (list_files)
+            printf("\n======= %sList%s =======\n", CYAN, RESET);
+            
+    }
+    else if (mode == SHOW_LIST_UI) {
+        printf("Listing: %s\n\n", path);
+
+        if (!is_piped) {
+            printf("  Sizes     | File\n");
+            printf(" ------     |-----\n");
+        }
+        
+    } else {
+        return;
+    }
 }
 
 void display(struct displayParam *dpp, int timer_ms) {
+    static char mode[12];
+    
     if (list_files) {
         printf("\n======= %sData%s =======",
             CYAN, RESET);
@@ -133,7 +157,6 @@ void display(struct displayParam *dpp, int timer_ms) {
         CYAN, dpp->folder_count, RESET);
 
 
-    static char mode[12];
     snprintf(mode, sizeof(mode), "%s",
         show_blocks ? "*Allocated" : "*Apparent");
         
@@ -154,6 +177,8 @@ void display(struct displayParam *dpp, int timer_ms) {
 }
 
 void liteDisplay(struct displayParam *dpp, int timer_ms) {
+    static char mode[12];
+    
     printf("\nTotal size:");
     if (dpp->total_gb > 0) {
         printf("\n * %lu GiB\n * %lu MiB\n",
@@ -178,8 +203,7 @@ void liteDisplay(struct displayParam *dpp, int timer_ms) {
     printf("\nFiles:   %lu", dpp->file_count);
     printf("\nFolders: %lu\n", dpp->folder_count);
 
-
-    static char mode[12];
+    
     snprintf(mode, sizeof(mode), "%s",
         show_blocks ? "*Allocated" : "*Apparent");
     

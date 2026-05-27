@@ -8,17 +8,19 @@
 
 #include "zulu.h"
 
-char biggest[1024] = { 0 };
+char biggest[1024]  = { 0 };
 char smallest[1024] = { 0 };
 
 
-int searchFolder(const char *path) {
+int searchFolder(int ui_mode, const char *path) {
     struct dirent *de;
     DIR *dr = opendir(path);
 
     if (dr == NULL) {
         perror("zulu> error");
         return 0;
+    } else {
+        stdout_ui(ui_mode, path);
     }
 
     struct fileParam fpp = { 0 };
@@ -89,12 +91,12 @@ int searchFolder(const char *path) {
                     struct humanParam hpp = { 0 };
                     humanOutput(&hpp, size);
 
-                    printf(" - %s%-16.16s %s%-4lu %s%s\n",
-                        hpp.color, de->d_name,
-                        ITALIC, hpp.convert, hpp.unit, RESET);
+                    printf("%s%-4lu %-4s%s%s\n",
+                        hpp.color, hpp.convert,
+                        hpp.unit, de->d_name, RESET);
                         
                 } else {
-                    printf(" - %s\n", de->d_name);
+                    printf(" %s\n", de->d_name);
                 }
             }
         }
@@ -105,14 +107,14 @@ int searchFolder(const char *path) {
                     struct humanParam hpp = { 0 };
                     humanOutput(&hpp, size);
 
-                    printf(" - %s%-32.32s%s | %s%-4lu %s%s\n",
-                        hpp.color, de->d_name, RESET,
-                        hpp.color, hpp.convert, hpp.unit, RESET);
+                    printf(" - %s%-4lu %-4s%s| %s%s%s\n",
+                        hpp.color, hpp.convert, hpp.unit, RESET,
+                        hpp.color, de->d_name, RESET);
                         
                 } else {
-                    printf(" - %-32.32s | %s%lu%s\n",
-                        de->d_name,
-                        CYAN, size, RESET);
+                    printf(" - %s%-9lu%s| %s\n",
+                        CYAN, size, RESET,
+                        de->d_name);
                 }
                 
             } else {
@@ -303,8 +305,8 @@ void fileData(const char *path) {
     printf("\nID of containing device: [%x,%x]\n",
         major(st.st_dev), minor(st.st_dev));
     
-    printf("\nLast access:        %s\n", ctime(&st.st_atime));
-    printf("Last modification:  %s\n", ctime(&st.st_mtime));
+    printf("\nLast access:        %s", ctime(&st.st_atime));
+    printf("Last modification:  %s", ctime(&st.st_mtime));
     printf("Last status change: %s\n", ctime(&st.st_ctime));
 
     printf("Ownership:   UID=%ju   GID=%ju\n",

@@ -12,8 +12,10 @@
 #include <sys/sysmacros.h>
 
 
-#define SHOW_VER 0
-#define SHOW_HELP 1
+#define SHOW_VER 1
+#define SHOW_HELP 2
+#define SHOW_SUM_UI 3
+#define SHOW_LIST_UI 4
 
 #define KIB (1ULL << 10)
 #define MIB (1ULL << 20)
@@ -95,14 +97,14 @@ void convert(int argc, char **argv);
 void auditFile(int argc, char **argv, const char *cwd);
 
 // core.c
-int searchFolder(const char *path);
+int searchFolder(int ui_mode, const char *path);
 void sizeMath(struct fileParam *fpp);
 void byteMath(const char *raw);
 void humanOutput(struct humanParam *hpp, size_t size);
 void fileData(const char *path);
 
 // ui.c
-void stdout_ui(int mode);
+void stdout_ui(int mode, const char *path);
 void display(struct displayParam *dpp, int timer_ms);
 void liteDisplay(struct displayParam *dpp, int timer_ms);
 
