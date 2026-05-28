@@ -15,14 +15,45 @@ volatile int list_files  = 0;
 volatile int byte_list   = 0;
 volatile int show_blocks = 0;
 volatile int human_sizes = 0;
+volatile int si_units    = 0;
 
 clock_t beginning = { 0 };
 
 
 int main(int argc, char **argv) {
     beginning = clock();
-    char *cwd = getcwd(NULL, 0);
-    const char *flag = argv[1];
+    char *cwd = NULL;
+
+    if (argc < 2) {
+        printf("zulu> Type 'zulu --help' for usage\n");
+
+        lite_mode = 1;
+
+        cwd = getcwd(NULL, 0);
+        searchFolder(0, cwd);
+
+        free(cwd);
+        return 0;
+    }
+    else if (strcmp(argv[1], "-H") == 0 ||
+             strcmp(argv[1], "--help") == 0) {
+
+        stdout_ui(SHOW_HELP, NULL);
+        return 0;
+    }
+    else if (strcmp(argv[1], "-V") == 0 ||
+             strcmp(argv[1], "--version") == 0) {
+
+        stdout_ui(SHOW_VER, NULL);
+        return 0;    
+    }
+
+
+    cwd = getcwd(NULL, 0);
+    const char *flag = NULL;
+
+    char *arguments[argc + 1];
+    int arg_count = 0;
     
     const char *zulu_env = getenv("ZULU_NO_COLOR");
     if (zulu_env != NULL && zulu_env[0] != '\0')
@@ -37,14 +68,26 @@ int main(int argc, char **argv) {
         no_colors = 1;
     }
 
-
-    if (argc < 2) {
-        printf("zulu> Type 'zulu -H' for usage\n");
-
-        lite_mode = 1;
-        searchFolder(0, cwd);
+    
+    // Get global flags and then filter them out
+    for (int i = 0; i < argc; i++) {
+        if (strcmp(argv[i], "--color") == 0) {
+            no_colors = no_colors ? 0 : 1;
+        }
+        else if (strcmp(argv[i], "--si") == 0) {
+            si_units = 1;
+            
+        } else {
+            arguments[arg_count] = argv[i];
+            arg_count++;
+        }
     }
-    else if (strcmp(flag, "-a") == 0) {
+
+    arguments[arg_count] = NULL;
+    flag = arguments[1];
+
+    
+    if (strcmp(flag, "-a") == 0) {
         printf("zulu> '%s'\n", cwd);
         
         lite_mode   = 1;
@@ -52,36 +95,27 @@ int main(int argc, char **argv) {
         
         searchFolder(0, cwd);
     }
-    else if (strcmp(flag, "-H") == 0 ||
-             strcmp(flag, "--help") == 0) {
-
-        stdout_ui(SHOW_HELP, NULL);
-    }
-    else if (strcmp(flag, "-V") == 0 ||
-             strcmp(flag, "--version") == 0) {
-
-        stdout_ui(SHOW_VER, NULL);
-    }
     else if (strcmp(flag, "-l") == 0 ||
              strcmp(flag, "-lh") == 0) {
 
-        listBytes(argc, argv, cwd);
+        listBytes(arg_count, arguments, cwd);
     }
     else if (strcmp(flag, "-s") == 0 ||
              strcmp(flag, "-sa") == 0) {
 
-        summary(argc, argv, cwd);
+        summary(arg_count, arguments, cwd);
     }
     else if (strcmp(flag, "-c") == 0) {
-        convert(argc, argv);
+        convert(arg_count, arguments);
     }
     else if (strcmp(flag, "-f") == 0) {
-        auditFile(argc, argv, cwd);
+        auditFile(arg_count, arguments, cwd);
         
     } else {
-        printf("%szulu%s> Unknown '%s'\n", RED, RESET, flag);
+        printf("zulu%s>%s Unknown option '%s'\nTry 'zulu --help' for usage\n", RED, RESET, flag);
     }
-    
+
+    free(cwd);
     return 0;
 }
 
@@ -89,9 +123,20 @@ void listBytes(int argc, char **argv, const char *cwd) {
     // zulu -l(h) [PATH]
     int count;
     byte_list = 1;
-    human_sizes = (strcmp(argv[1], "-lh") == 0);
+    const char *path = cwd;
 
-    const char *path = argc > 2 ? argv[2] : cwd;
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-l") == 0) {
+            continue;
+        }
+        else if (strcmp(argv[i], "-lh") == 0 ||
+                 strcmp(argv[i], "-h") == 0) {
+            human_sizes = 1;
+            
+        } else {
+            path = argv[i];
+        }
+    }
 
     count = searchFolder(SHOW_LIST_UI, path);
             
@@ -99,30 +144,31 @@ void listBytes(int argc, char **argv, const char *cwd) {
 }
 
 void summary(int argc, char **argv, const char *cwd) {
-    // zulu -s(a) [--ls] [PATH]
+    // zulu -s(a) [opts] [PATH]
     const char *path = cwd;
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-s") == 0) {
             continue;
         }
-        else if (strcmp(argv[i], "-sa") == 0) {
+        else if (strcmp(argv[i], "-sa") == 0 ||
+                 strcmp(argv[i], "-a") == 0) {
             show_blocks = 1;
         }
         else if (strcmp(argv[i], "--ls") == 0) {
             list_files = 1;
         }
         else if (strcmp(argv[i], "--lsu") == 0) {
-            list_files = 1;
+            list_files  = 1;
             human_sizes = 1;
-        }
-        else {
+            
+        } else {
             path = argv[i];
         }
     }
 
     if (path == NULL || strlen(path) == 0) {
-        printf("%szulu%s> No directory provided and CWD is unavailable\n", RED, RESET);
+        printf("zulu%s>%s No directory provided and CWD is unavailable\n", RED, RESET);
         return;
     }
     
@@ -131,8 +177,9 @@ void summary(int argc, char **argv, const char *cwd) {
 
 void convert(int argc, char **argv) {
     // zulu -c <bytes>
+
     if (argc < 3) {
-        printf("%szulu%s> No byte size provided\n", RED, RESET);
+        printf("zulu%s>%s No bytes provided\n", RED, RESET);
         return;
     }
 
@@ -144,7 +191,7 @@ void auditFile(int argc, char **argv, const char *cwd) {
     char file_path[4096];
     
     if (argc < 3) {
-        printf("%szulu%s> No file or path provided (use <NAME> for a file in CWD)\n", RED, RESET);
+        printf("zulu%s>%s No file or path provided\nTry <NAME> for a file in the CWD\n", RED, RESET);
         return;
     }
     

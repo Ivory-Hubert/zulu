@@ -23,13 +23,13 @@ int searchFolder(int ui_mode, const char *path) {
         stdout_ui(ui_mode, path);
     }
 
+    char full_path[4096];
+    
     struct fileParam fpp = { 0 };
 
     fpp.min_size = (u64)-1;
     // to have a base line higher than any normal file size
     // the moment a real file gets counted its gone, replaced
-    
-    char full_path[4096];
     
     while ((de = readdir(dr)) != NULL) {
         if (!strcmp(de->d_name, ".") ||
@@ -60,7 +60,7 @@ int searchFolder(int ui_mode, const char *path) {
         }
 
         if ((u64)st.st_size > (1ULL << 40)) {
-            printf("%szulu%s> '%s' skipped\n", RED, RESET, de->d_name);
+            printf("zulu%s>%s '%s' skipped\n", RED, RESET, de->d_name);
             continue;
         }
 
@@ -156,7 +156,7 @@ void sizeMath(struct fileParam *fpp) {
         dpp.total_kb = (fpp->total_size + HALF_KIB) / KIB;
     }
     else if (fpp->total_size >= KIB) {
-        dpp.total_kb = (fpp->total_size + HALF_KIB) / KIB;
+        dpp.total_kb    = (fpp->total_size + HALF_KIB) / KIB;
         dpp.total_bytes = fpp->total_size;
         
     } else {
@@ -174,7 +174,7 @@ void sizeMath(struct fileParam *fpp) {
             dpp.biggest_kb = (fpp->max_size + HALF_KIB) / KIB;
         }
         else if (fpp->max_size >= KIB) {
-            dpp.biggest_kb = (fpp->max_size + HALF_KIB) / KIB;
+            dpp.biggest_kb    = (fpp->max_size + HALF_KIB) / KIB;
             dpp.biggest_bytes = fpp->max_size;
             
         } else {
@@ -191,7 +191,7 @@ void sizeMath(struct fileParam *fpp) {
             dpp.smallest_kb = (fpp->min_size + HALF_KIB) / KIB;
         }
         else if (fpp->min_size >= KIB) {
-            dpp.smallest_kb = (fpp->min_size + HALF_KIB) / KIB;
+            dpp.smallest_kb    = (fpp->min_size + HALF_KIB) / KIB;
             dpp.smallest_bytes = fpp->min_size;
             
         } else {
@@ -228,12 +228,22 @@ void byteMath(const char *raw) {
     u64 mib = (val + HALF_MIB) / MIB;
     u64 kib = (val + HALF_KIB) / KIB;
 
-    printf("zulu> Results:\n");
-    printf(" * %s%lu%s GiB\n * %s%lu%s MiB\n * %lu KiB\n\n",
-        RED, gib, RESET,
-        YELLOW, mib, RESET,
-        kib);
+    printf("zulu> Results:");
+
+    if (val >= GIB) {
+        printf("\n * %s%lu%s %s\n * %lu %s\n\n",
+                CYAN, gib, RESET, UNIT_GIB, mib, UNIT_MIB);
+    }
+    else if (val >= MIB) {
+        printf("\n * %s%lu%s %s\n * %lu %s\n\n",
+                CYAN, mib, RESET, UNIT_MIB, kib, UNIT_KIB);
+    }
+    else if (val >= KIB) {
+        printf(" %lu %s\n", kib, UNIT_KIB);
         
+    } else {
+        printf(" None\n");
+    }
 }
 
 void humanOutput(struct humanParam *hpp, size_t size) {
@@ -242,19 +252,21 @@ void humanOutput(struct humanParam *hpp, size_t size) {
     
     if (size >= GIB) {
         hpp->convert = (size + HALF_GIB) / GIB;
-        snprintf(hpp->unit, sizeof(hpp->unit), "GiB");
+        snprintf(hpp->unit, sizeof(hpp->unit), UNIT_GIB);
         snprintf(hpp->color, sizeof(hpp->color), RED);
     }
     else if (size >= MIB) {
         hpp->convert = (size + HALF_MIB) / MIB;
-        snprintf(hpp->unit, sizeof(hpp->unit), "MiB");
+        snprintf(hpp->unit, sizeof(hpp->unit), UNIT_MIB);
         snprintf(hpp->color, sizeof(hpp->color), YELLOW);
     }
     else if (size >= KIB) {
         hpp->convert = (size + HALF_KIB) / KIB;
-        snprintf(hpp->unit, sizeof(hpp->unit), "KiB");
+        snprintf(hpp->unit, sizeof(hpp->unit), UNIT_KIB);
+        
+    } else {
+        hpp->convert = size;
     }
-    else { hpp->convert = size; }
 
 }
 
@@ -285,9 +297,9 @@ void fileData(const char *path) {
             printf("FIFO/pipe\n");
             break;
             
-        case S_IFLNK:
+        /*case S_IFLNK:
             printf("symlink\n");
-            break;
+            break;*/
             
         case S_IFREG:
             printf("regular file\n");

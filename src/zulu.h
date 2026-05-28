@@ -17,13 +17,35 @@
 #define SHOW_SUM_UI 3
 #define SHOW_LIST_UI 4
 
-#define KIB (1ULL << 10)
-#define MIB (1ULL << 20)
-#define GIB (1ULL << 30)
+#define KIB (si_units ? 1000       : 1ULL << 10)
+#define MIB (si_units ? 1000 * KIB : 1ULL << 20)
+#define GIB (si_units ? 1000 * MIB : 1ULL << 30)
 
 #define HALF_KIB (KIB >> 1)
 #define HALF_MIB (MIB >> 1)
 #define HALF_GIB (GIB >> 1)
+
+#define UNIT_KIB (si_units ? "KB" : "KiB")
+#define UNIT_MIB (si_units ? "MB" : "MiB")
+#define UNIT_GIB (si_units ? "GB" : "GiB")
+
+#define ANSI_BOLD   "\x1b[1m"
+#define ANSI_ITALIC "\x1b[3m"
+#define ANSI_RESET  "\x1b[m"
+#define ANSI_YELLOW "\x1b[38;5;222m"
+#define ANSI_GREEN  "\x1b[38;5;78m"
+#define ANSI_CYAN   "\x1b[38;5;14m"
+#define ANSI_GREY   "\x1b[38;5;242m"
+#define ANSI_RED    "\x1b[38;5;160m"
+
+#define ITALIC (is_piped ? "" : ANSI_ITALIC)
+#define RESET  (is_piped ? "" : ANSI_RESET)
+#define YELLOW (is_piped ? "" : no_colors ? ANSI_BOLD   : ANSI_YELLOW)
+#define GREEN  (is_piped ? "" : no_colors ? ANSI_BOLD   : ANSI_GREEN)
+#define CYAN   (is_piped ? "" : no_colors ? ANSI_ITALIC : ANSI_CYAN)
+#define GREY   (is_piped ? "" : no_colors ? ANSI_ITALIC : ANSI_GREY)
+#define RED    (is_piped ? "" : no_colors ? ANSI_BOLD   : ANSI_RED)
+
 
 typedef uint64_t u64;
 
@@ -34,28 +56,11 @@ extern volatile int list_files;
 extern volatile int byte_list;
 extern volatile int show_blocks;
 extern volatile int human_sizes;
+extern volatile int si_units;
 
 extern clock_t beginning;
 extern char biggest[1024];
 extern char smallest[1024];
-
-
-#define ANSI_ITALIC "\x1b[3m"
-#define ANSI_RESET  "\x1b[m"
-#define ANSI_YELLOW "\x1b[38;5;222m"
-#define ANSI_GREEN  "\x1b[38;5;78m"
-#define ANSI_GREY   "\x1b[38;5;242m"
-#define ANSI_RED    "\x1b[38;5;160m"
-#define ANSI_CYAN   "\x1b[38;5;14m"
-#define ANSI_BOLD   "\x1b[1m"
-
-#define ITALIC (is_piped ? "" : ANSI_ITALIC)
-#define RESET  (is_piped ? "" : ANSI_RESET)
-#define YELLOW (is_piped ? "" : no_colors ? ANSI_BOLD : ANSI_YELLOW)
-#define GREEN  (is_piped ? "" : no_colors ? ANSI_BOLD : ANSI_GREEN)
-#define CYAN   (is_piped ? "" : no_colors ? ANSI_BOLD : ANSI_CYAN)
-#define RED    (is_piped ? "" : no_colors ? ANSI_BOLD : ANSI_RED)
-#define GREY   (no_colors ? "" : ANSI_GREY)
 
 
 struct fileParam {
