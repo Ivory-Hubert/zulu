@@ -1,12 +1,12 @@
 ## More features visualised
 
-**Summary output with the list flag:**
+**Summary output with the unit list flag:**
 
 ![List](list_output.png)
 
-**Byte output from a file path:**
+**Table list with human readable sizes:**
 
-![Bytes](byte_output.png)
+![Table](byte_output.png)
 
 **Piped output from a file:**
 

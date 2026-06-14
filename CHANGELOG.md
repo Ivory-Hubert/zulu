@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 [DA](https://github.com/Ivory-Hubert/Developer-Assistant) assures the format stays consistent.
 
+## [0.2.0] - 2026-06-14
+
+### Added
+- **SI units**
+
+Added support for SI units, for every mode that deals with units. Now the new `--si` and `--color` flags are both global, so they could be added to anything. 
+
+- **No color**
+
+Added a `--color` flag that overrides the env. variable color state. Also on top of bold, now there's italic styling in the colorless mode, of course not when piped.
+
+### Changed
+- **New tables**
+
+The byte list is now the `-l` flag, and with `-lh` it will add converted units to the table. Otherwise it's still machine friendly when piped.
+
+- **Minor changes**
+
+The byte converter now only shows useful units together and only KiB if needed. As mentioned before supports the `--si` and `--color` flags too. Made the usage message more informative and structured. Also optimised the logic paths for reaching the usage and version messages, and the default minimal mode too.
+
+
 ## [0.1.2] - 2026-05-09
 
 ### Added
