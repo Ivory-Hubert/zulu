@@ -7,7 +7,7 @@
 Provides quick summaries of one directory:
 * biggest/smallest file
 * total size of all files
-* total count of files/sub directories
+* total count of files/subdirectories
 
 Allows choosing between allocated & apparent sizes and 1000 or 1024 based units.
 
@@ -28,7 +28,7 @@ That's the basic output and summary in action:
 
 * Lists only useful units together, depending on sizes: `GiB & MiB` | `MiB & KiB` | `KiB & bytes` | `just bytes`
 also supports SI units (powers of 1000) and allocated sizes.
-* Can list the files & subfolders found, *always lists the biggest & smallest file*.
+* Can list the files & subdirectories found, *always lists the biggest & smallest file*.
 * Simple output mode that skips some logic, to display only total size & count, and only in the largest units needed.
 * Table listing mode, optionally with converted units, *outputs in a parser-friendly format when piped*.
 * Built-in byte converter, displays provided bytes in chosen units.
@@ -40,7 +40,7 @@ See also:
 * Integration [examples](./docs/EXAMPLES.md) using piped output
 
 > [!NOTE]
-> Zulu does not report any metadata other than file size, *outside of file stat view*. Does not go into subdirectories. Ignores non-files entirely, *will still list the subfolders*.
+> Zulu does not report any metadata other than file size, *outside of file stat view*. Does not dive into subdirectories. Ignores non-files entirely, *will still list subdirectories*.
 
 When it comes to colored output, Zulu checks for `NO_COLOR` and `ZULU_NO_COLOR` environment variables on startup.
 Whether you don't want colors at all or just no Zulu colors, you're covered. There's still some bold/italic text when not piped.
