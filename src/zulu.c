@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
     char *cwd = NULL;
 
     if (argc < 2) {
-        printf("zulu> Type 'zulu --help' for usage\n");
+        printf("zulu> 'zulu --help' for usage\n");
 
         lite_mode = 1;
 
@@ -54,6 +54,7 @@ int main(int argc, char **argv) {
 
     char *arguments[argc + 1];
     int arg_count = 0;
+
     
     const char *zulu_env = getenv("ZULU_NO_COLOR");
     if (zulu_env != NULL && zulu_env[0] != '\0')
@@ -84,7 +85,13 @@ int main(int argc, char **argv) {
     }
 
     arguments[arg_count] = NULL;
-    flag = arguments[1];
+    
+    if (arg_count > 1) {
+        flag = arguments[1];
+    } else {
+        free(cwd);
+        return 0;
+    }
 
     
     if (strcmp(flag, "-a") == 0) {

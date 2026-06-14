@@ -15,7 +15,7 @@ static const char usage[] =
     "    -s  [PATH]     Summary of the current or provided directory\n"
     "        -a     Show allocated sizes on disk instead\n"
     "        --ls   Also list the files/directories counted\n"
-    "        --lsu  Add converted size units to the list\n"
+    "        --lsu  Directory list with converted file sizes\n"
     "    -l  [PATH]     List the current or chosen directory in a table format,\n"
     "                   when piped outputs with no conversion and formatting\n"
     "        -h     Convert and print sizes in a more human readable way\n"
@@ -40,7 +40,7 @@ static const char usage[] =
     "manipulate color for piping/redirecting output.\n";
     
 static const char version[] = 
-    "zulu - 0.2.0\n\n"
+    "zulu 0.2.0\n"
     "(C) 2026 Ivori Huobolainen\n"
     "Licensed under the GNU GPL v3 or later\n"
     "<https://www.gnu.org/licenses/gpl-3.0.html>\n";
@@ -65,8 +65,8 @@ void stdout_ui(int mode, const char* path) {
         printf("Listing: %s\n\n", path);
 
         if (!is_piped) {
-            printf("  Sizes     | File\n");
-            printf(" ------     |-----\n");
+            printf("  Sizes     | Files\n");
+            printf(" ------     |------\n");
         }
         
     } else {
@@ -76,7 +76,11 @@ void stdout_ui(int mode, const char* path) {
 
 void display(struct displayParam *dpp, int timer_ms) {
     static char mode[12];
-    
+
+    snprintf(mode, sizeof(mode), "%s",
+             show_blocks ? "*Allocated" : "*Apparent");
+
+        
     if (list_files) {
         printf("\n======= %sData%s =======",
             CYAN, RESET);
@@ -104,7 +108,7 @@ void display(struct displayParam *dpp, int timer_ms) {
             
     } else {
         // early exit to not clutter UI
-        printf("No files or empty file(s)\n");
+        printf("No regular files found\n");
         printf("\nFolders: %s%lu%s\n\n",
             CYAN, dpp->folder_count, RESET);
 
@@ -165,9 +169,6 @@ void display(struct displayParam *dpp, int timer_ms) {
     printf("\nFolders: %s%lu%s\n",
         CYAN, dpp->folder_count, RESET);
 
-
-    snprintf(mode, sizeof(mode), "%s",
-        show_blocks ? "*Allocated" : "*Apparent");
         
     if (timer_ms > 0) {
         printf("\n%s (%s%d%s ms)\n",
@@ -187,7 +188,11 @@ void display(struct displayParam *dpp, int timer_ms) {
 
 void liteDisplay(struct displayParam *dpp, int timer_ms) {
     static char mode[12];
-    
+
+    snprintf(mode, sizeof(mode), "%s",
+             show_blocks ? "*Allocated" : "*Apparent");
+
+        
     printf("\nTotal size:");
     if (dpp->total_gb > 0) {
         printf("\n * %lu %s\n * %lu %s\n",
@@ -211,10 +216,6 @@ void liteDisplay(struct displayParam *dpp, int timer_ms) {
     
     printf("\nFiles:   %lu", dpp->file_count);
     printf("\nFolders: %lu\n", dpp->folder_count);
-
-    
-    snprintf(mode, sizeof(mode), "%s",
-        show_blocks ? "*Allocated" : "*Apparent");
     
     if (timer_ms > 0) {
         printf("\n%s (%d ms)\n", mode, timer_ms);
@@ -224,4 +225,3 @@ void liteDisplay(struct displayParam *dpp, int timer_ms) {
     
     exit(0);
 }
-

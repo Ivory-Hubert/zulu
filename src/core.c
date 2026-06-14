@@ -102,7 +102,10 @@ int searchFolder(int ui_mode, const char *path) {
         }
 
         if (byte_list) {
-            if (!is_piped) {
+            if (is_piped) {
+                printf("%s|%lu\n", de->d_name, size);
+                
+            } else {
                 if (human_sizes) {
                     struct humanParam hpp = { 0 };
                     humanOutput(&hpp, size);
@@ -116,9 +119,6 @@ int searchFolder(int ui_mode, const char *path) {
                         CYAN, size, RESET,
                         de->d_name);
                 }
-                
-            } else {
-                printf("%s|%lu\n", de->d_name, size);
             }
         }
         
