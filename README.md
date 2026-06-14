@@ -4,9 +4,15 @@
 
 * **Versions:** in [releases](https://github.com/Ivory-Hubert/zulu/releases)
 
-Provides quick summaries of one directory: biggest/smallest file, total count of files/sub dirs and the total size of all files.
-Allows choosing between allocated & apparent sizes and 1000/1024 based units.
+Provides quick summaries of one directory:
+* biggest/smallest file
+* total size of all files
+* total count of files/sub directories
+
+Allows choosing between allocated & apparent sizes and 1000 or 1024 based units.
+
 Can make a machine friendly listing of a directory, with raw byte sizes for usage in pipelines.
+
 Due to the lack of recursion or complex sorting/filtering does its intended job rather quickly.
 There are also other quality of life features sprinkled on top, see below.
 
